@@ -1,0 +1,8 @@
+*.txt
+dump.*
+log.*
+*.pdf 
+*/dump.*
+*/log.* 
+*/*.pdf
+
