@@ -1,0 +1,32 @@
+#3d Lennard-Jones gas
+
+units lj # lennard jones units dimentionless
+dimension 3
+boundary p p p # periodic
+atom_style atomic #how to model the atom. atomic is the simplest form
+                  #used mostly for noble gases and coarse grained simulation models
+
+lattice fcc 0.01 #generates points in space for atoms. Face-Centered-Cubic shape
+                 #a three dimensional lattice
+region simbox block 0 10 0 10 0 10 # defines a region with  0<xyz<10 and name simbox
+create_box 1 simbox #creates box that contains only 1 type of atoms.
+create_atoms 1 box
+
+mass 1 1.0 #gives the atoms mass 1 in relative LJ units
+velocity all create 2.5 87287 # all atoms given a relative velocity of 2.5 in LJ units
+                              # the last number is simply a random number generator seed
+
+pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
+pair_coeff 1 1 1.0 1.0 3.0 #describes the paramaters for the interactions
+                           #1 1 indicates we are describing interactions between
+                           # type 1 and type 1 atoms. the rest is sigma, epsilon and
+                           # cutoff distance respectivley.
+
+fix 1 all nve #specifies type of simulation. here we have constant n v and e
+              # the 1 is just the name of the fix
+
+# 1 is name of dump (could be string) all atoms are dumped every 10 timesteps to the file
+#dump.lammostrj. the rest is what is dumped.
+dump 1 all custom 10 dump.lammpstrj id type x y z vx vy vz
+thermo 100
+run 5000
