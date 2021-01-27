@@ -13,7 +13,7 @@ create_box 1 simbox #creates box that contains only 1 type of atoms.
 create_atoms 1 box
 
 mass 1 1.0 #gives the atoms mass 1 in relative LJ units
-velocity all create 2.5 87287 # all atoms given a relative velocity of 2.5 in LJ units
+velocity all create 2.5 87287 dist uniform # all atoms given a relative velocity of 2.5 in LJ units
                               # the last number is simply a random number generator seed
 
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
