@@ -22,20 +22,17 @@ def readfile(filename):
     j=0
     size = int(np.shape(file)[0])
     print(size)
-    while i <= size:
+    while i <= (size -1):
         line = file[i]
         if line[:14] == 'ITEM: TIMESTEP':
-            print('fuck')
             timestep +=1
             histogram_matrix.append(np.histogram(velocity_values_i, bins=num_bins))
-
-            print(timestep)
             i += 8
 
         elem = line.split()
-        print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
-        j = (i-9*timestep)
-        velocity_values_i[j - ((num_atoms-9)*timestep)] = np.linalg.norm(elem[5:])
+        #print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
+        j = (i-(9+ 9*timestep))
+        velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
 
 
