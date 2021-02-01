@@ -35,8 +35,24 @@ def readfile(filename):
         velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
 
-
-
-    print(header)
     infile.close()
-readfile(path)
+    return histogram_matrix
+
+
+histogram_matrix= readfile(path)
+norm = np.dot(histogram_matrix[0][1], histogram_matrix[0][1])
+dots = np.zeros(len(histogram_matrix))
+for i in range(1,len(histogram_matrix)):
+    dots[i] = np.dot(histogram_matrix[0][1], histogram_matrix[i][1])/(norm)
+plt.plot(dots)
+plt.show()
+
+plt.subplot(211)
+plt.bar(histogram_matrix[0][1][:-1], histogram_matrix[0][0])
+plt.subplot(212)
+plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
+print(histogram_matrix[-1])
+print(histogram_matrix[-1][1])
+print('cunt')
+print(histogram_matrix[-1][0])
+plt.show()
