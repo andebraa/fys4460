@@ -40,7 +40,7 @@ def readfile(filename):
 
 
 histogram_matrix= readfile(path)
-norm = np.dot(histogram_matrix[0][1], histogram_matrix[0][1])
+norm = np.dot(histogram_matrix[-1][1], histogram_matrix[-1][1])
 dots = np.zeros(len(histogram_matrix))
 for i in range(1,len(histogram_matrix)):
     dots[i] = np.dot(histogram_matrix[0][1], histogram_matrix[i][1])/(norm)
