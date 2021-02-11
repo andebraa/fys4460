@@ -18,6 +18,10 @@ create_box 1 simbox #creates box that contains only 1 type of atoms.
 create_atoms 1 box
 
 mass 1 1.0 #gives the atoms mass 1 in relative LJ units
+
+variable i loop 5 #start loop
+
+
 velocity all create $v 87287 # all atoms given a relative velocity of 2.5 in LJ units
                               # the last number is simply a random number generator seed
                               # do i need random seed aswell?
@@ -37,7 +41,8 @@ compute 2 all msd
 
 # 1 is name of dump (could be string) all atoms are dumped every 10 timesteps to the file
 #dump.lammostrj. the rest is what is dumped.
-dump 1 all custom 10 dump.lammpstrj id type x y z vx vy vz
+dump 1 all custom 10 dump.lammps_$v id type x y z vx vy vz
+log log.lammps_$v #hopefully the name of the file
 thermo 10
 thermo_style custom step temp ke pe etotal press c_2[4]
 
@@ -49,4 +54,3 @@ run 5000
 next i
 next v #goes to next velocity index
 jump SELF loop_1
-variable i delete
