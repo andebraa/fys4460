@@ -1,7 +1,11 @@
 #3d Lennard-Jones gas
 
+
+label vloop
 variable v index 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 #differenct velocity values
 
+
+#---------------------INITIALIZATION-----------------------
 units lj # lennard jones units dimentionless
 dimension 3
 boundary p p p # periodic
@@ -9,7 +13,7 @@ atom_style atomic #how to model the atom. atomic is the simplest form
                   #used mostly for noble gases and coarse grained simulation models
 
 
-
+#---------------------ATOM DEFINITION-----------------------
 lattice fcc 0.01 #generates points in space for atoms. Face-Centered-Cubic shape
                  #a three dimensional lattice
 region simbox block 0 10 0 10 0 10 # defines a region with  0<xyz<10 and name simbox
@@ -19,13 +23,8 @@ create_atoms 1 box
 
 mass 1 1.0 #gives the atoms mass 1 in relative LJ units
 
-variable i loop 5 #start loop
 
-
-velocity all create $v 87287 # all atoms given a relative velocity of 2.5 in LJ units
-                              # the last number is simply a random number generator seed
-                              # do i need random seed aswell?
-
+#---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
 pair_coeff 1 1 1.0 1.0 3.0 #describes the paramaters for the interactions
                            #1 1 indicates we are describing interactions between
@@ -34,6 +33,12 @@ pair_coeff 1 1 1.0 1.0 3.0 #describes the paramaters for the interactions
 
 fix 1 all nve #specifies type of simulation. here we have constant n v and e
               # the 1 is just the name of the fix
+
+velocity all create $v 87287 # all atoms given a relative velocity of 2.5 in LJ units
+                              # the last number is simply a random number generator seed
+                              # do i need random seed aswell?
+
+
 
 compute 2 all msd
 # 2 is name of compute, can have the same name as fix or dump.
@@ -50,7 +55,8 @@ run 5000
 
 
 
-
-next i
+undump 1 #attempt at closing the dump file
+clear 
 next v #goes to next velocity index
-jump SELF loop_1
+
+jump SELF vloop
