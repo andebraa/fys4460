@@ -5,4 +5,5 @@ log.*
 */dump.*
 */log.* 
 */*.pdf
-
+*/*.png
+*.png 
