@@ -38,6 +38,8 @@ def readfile(filename):
     infile.close()
     return histogram_matrix
 
+# def maxwell(x):
+#     return 600*np.sqrt(2/np.pi)*x**2 * np.exp((-(1.5*x)**2)/2)
 
 histogram_matrix= readfile(path)
 norm = np.dot(histogram_matrix[-1][1], histogram_matrix[-1][1])
@@ -45,14 +47,20 @@ dots = np.zeros(len(histogram_matrix))
 for i in range(1,len(histogram_matrix)):
     dots[i] = np.dot(histogram_matrix[0][1], histogram_matrix[i][1])/(norm)
 plt.plot(dots)
+plt.xlabel('steps /10')
+plt.ylabel('$\sum_i h_i (t) h_i(t_n)/ \sum_i h_i(t_n) h_i(t_n)$')
 plt.show()
 
 plt.subplot(211)
+plt.title('initial state')
 plt.bar(histogram_matrix[0][1][:-1], histogram_matrix[0][0])
+plt.xlabel('velocity')
 plt.subplot(212)
+plt.title('final state')
+plt.xlabel('velocity')
 plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
-print(histogram_matrix[-1])
-print(histogram_matrix[-1][1])
-print('cunt')
-print(histogram_matrix[-1][0])
+#attempt at plotting maxwell boltzmann distribution. not worth the time
+# plt.plot(np.linspace(0,7,100), maxwell(np.linspace(0,7,100)))
+# plt.plot(np.linspace(0,7,100), maxwell(np.linspace(0,7,100)), '-r')
+# plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
 plt.show()

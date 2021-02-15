@@ -77,7 +77,7 @@ def readfile(filename, velocity):
                                                                 float(toteng_),\
                                                                 float(press_),\
                                                                 float(dist_)
-        #print(step_, temp_, kineng_, poteng_, toteng_, press_, dist_)
+
         step[j] = step_
         temp[j] = temp_
         press[j] = press_
@@ -85,7 +85,7 @@ def readfile(filename, velocity):
         poteng[j] = poteng_
         toteng[j] = toteng_
         dist[j] = dist_
-        print(step_, dist_)
+        print(step_)
 
         i +=1
         timestep += 1
@@ -108,24 +108,39 @@ temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 avg_press = np.zeros(len(temps))
 for i,v in enumerate(temps):
     step, temp, press, kineng, poteng, toteng, dist  = histogram_matrix= readfile(path, v)
-    # plt.plot(step, temp)
+
+    # #c part 1 temp varying init v
+    # plt.plot(step, temp, label=f'v = {v}')
     # plt.xlabel('step')
     # plt.ylabel('tempterautre [Lennard Jones]')
-    # plt.show()
+
+    # #c part 2 pressure varying init v
+    # plt.plot(step, press, label = f'v = {v}')
+    # plt.xlabel('step')
+    # plt.ylabel('pressure [LJ]')
+
     # plt.plot(step, dist)
     # plt.xlabel('step')
     # plt.ylabel('dist [lennar jones]')
-    # plt.show()
-    #
-    # plt.plot(step, kineng, label ='kineng')
-    # plt.plot(step, poteng, label ='poteng')
-    # plt.plot(step, toteng, label ='toteng')
-    print(avg_press)
-    print(temps)
+
+
+    #oppgave d)
     avg_press[i] = np.average(press)
 
 #oppgave d)
-plt.plot(temps, avg_press, 'o', label = f'init velocity {v}')
+plt.plot(temps, avg_press, 'o')
+plt.title('Average pressure over time,  per temperature')
+plt.xlabel('T [LJ]')
+plt.ylabel('average pressure')
+
+
+#part B, plot energy
+# plt.plot(step, kineng, label ='kineng')
+# plt.plot(step, poteng, label ='poteng')
+# plt.plot(step, toteng, label ='toteng')
+# plt.xlabel('timestep /10')
+# plt.ylabel('Energy [JL]')
+
 
 
 plt.legend()

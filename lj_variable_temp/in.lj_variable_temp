@@ -34,7 +34,7 @@ pair_coeff 1 1 1.0 1.0 3.0 #describes the paramaters for the interactions
 fix 1 all nve #specifies type of simulation. here we have constant n v and e
               # the 1 is just the name of the fix
 
-velocity all create $v 87287 # all atoms given a relative velocity of 2.5 in LJ units
+velocity all create $v 87287 dist uniform # all atoms given a relative velocity of 2.5 in LJ units
                               # the last number is simply a random number generator seed
                               # do i need random seed aswell?
 
@@ -56,7 +56,7 @@ run 5000
 
 
 undump 1 #attempt at closing the dump file
-clear 
+clear
 next v #goes to next velocity index
 
 jump SELF vloop
