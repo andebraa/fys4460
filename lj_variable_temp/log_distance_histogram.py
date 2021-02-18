@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spacial import distance
 
 path = 'dump.lammpstrj'
 
@@ -15,13 +14,14 @@ def readfile(filename):
     num_bins = 30 #number of bins
     num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
     velocity_values_i = np.zeros(num_atoms)
-    distances = np.zeros(num_atoms -1)
+    particle_pos = np.zeros(num_atoms, 3) #x,y,z
+    distance_values = np.zeros()
     print(num_atoms)
     #histogram_matrix = np.zeros((num_timesteps, num_bins, num_bins +1)) #the histogram for each timestep
     histogram_matrix = [] #
     timestep = 0
-    i=9
-    j=0
+    i=9 #running index of each row of the file
+    j=0 #actual particle index
     size = int(np.shape(file)[0])
     print(size)
     while i <= (size -1):
@@ -31,12 +31,18 @@ def readfile(filename):
             histogram_matrix.append(np.histogram(velocity_values_i, bins=num_bins))
             i += 8
 
-        elem = line.split()
+        elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
         #print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
         j = (i-(9+ 9*timestep))
+        particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
         velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
 
+    for j in range(Natoms):
+        #thesepos stores all the positions
+        jpos = thesepos[j]
+        for k in range(j+1, natoms):
+            dist = jpos = thesepos[k]
     infile.close()
     return histogram_matrix
 

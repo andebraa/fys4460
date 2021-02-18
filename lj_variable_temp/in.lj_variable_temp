@@ -39,6 +39,7 @@ velocity all create $v 87287 dist uniform # all atoms given a relative velocity 
                               # do i need random seed aswell?
 
 
+run 2000 #system reaches equilibrium
 
 compute 2 all msd
 # 2 is name of compute, can have the same name as fix or dump.

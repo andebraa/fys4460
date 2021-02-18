@@ -119,19 +119,20 @@ for i,v in enumerate(temps):
     # plt.xlabel('step')
     # plt.ylabel('pressure [LJ]')
 
-    # plt.plot(step, dist)
-    # plt.xlabel('step')
-    # plt.ylabel('dist [lennar jones]')
+    #oppgave f)
+    plt.plot(step, dist, label=f'v:{v}')
+    plt.xlabel('step')
+    plt.ylabel('dist [lj]')
 
 
     #oppgave d)
     avg_press[i] = np.average(press)
 
 #oppgave d)
-plt.plot(temps, avg_press, 'o')
-plt.title('Average pressure over time,  per temperature')
-plt.xlabel('T [LJ]')
-plt.ylabel('average pressure')
+# plt.plot(temps, avg_press, 'o')
+# plt.title('Average pressure over time,  per temperature')
+# plt.xlabel('T [LJ]')
+# plt.ylabel('average pressure')
 
 
 #part B, plot energy
