@@ -15,7 +15,7 @@ def readfile(filename):
     num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
     velocity_values_i = np.zeros(num_atoms)
     particle_pos = np.zeros(num_atoms, 3) #x,y,z
-    distance_values = np.zeros()
+    distance_values = np.zeros(num_atoms)
     print(num_atoms)
     #histogram_matrix = np.zeros((num_timesteps, num_bins, num_bins +1)) #the histogram for each timestep
     histogram_matrix = [] #
