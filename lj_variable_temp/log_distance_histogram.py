@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as ss
 
-path = 'dump.lammpstrj'
+path = 'dump.lammps_0.5'
 
 def readfile(filename):
     """
@@ -19,8 +19,10 @@ def readfile(filename):
     num_bins = 30 #number of bins
     num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
     particle_pos = np.zeros((num_atoms, 3)) #x,y,z
-    combinations = int((num_atoms*(num_atoms-1))/2)
+    combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
     distance_values = np.zeros(combinations)
+    histogram_matrix = []
+
     print(num_atoms)
 
     timestep = 0
@@ -32,9 +34,15 @@ def readfile(filename):
         line = file[i]
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
-            print('check')
-
-            i += 8
+            if timestep in (10,11,10):
+                for j in range(num_atoms):
+                    #thesepos stores all the positions
+                    jpos = particle_pos[j]
+                    for k in range(j+1, num_atoms):
+                        distance_values = np.linalg.norm((jpos,particle_pos[k]), axis=0)
+            histogram_matrix.append(np.histogram(distance_values, bins=num_bins))
+            i += 9
+            line = file[i]
 
         elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
         print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
@@ -42,37 +50,23 @@ def readfile(filename):
         particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
         i +=1
 
-    for j in range(num_atoms):
-        #thesepos stores all the positions
-        jpos = particle_pos[j]
-        for k in range(j+1, natoms):
-            distance_values = np.linalg.norm((jpos,thesepos[k]), axis=0)
+
     infile.close()
-    return distance_values
+    return distance_values, histogram_matrix
 
-# def maxwell(x):
-#     return 600*np.sqrt(2/np.pi)*x**2 * np.exp((-(1.5*x)**2)/2)
 
-histogram_matrix= readfile(path)
-norm = np.dot(histogram_matrix[-1][0], histogram_matrix[-1][0])
-dots = np.zeros(len(histogram_matrix))
-for i in range(1,len(histogram_matrix)):
-    dots[i] = np.dot(histogram_matrix[-1][0], histogram_matrix[i][0])/(norm)
-plt.plot(dots)
-plt.xlabel('steps /10')
-plt.ylabel('$\sum_i h_i (t) h_i(t_n)/ \sum_i h_i(t_n) h_i(t_n)$')
-plt.show()
+dist_values, histogram_matrix= readfile(path)
 
-plt.subplot(211)
-plt.title('initial state')
-plt.bar(histogram_matrix[0][1][:-1], histogram_matrix[0][0])
-plt.xlabel('velocity')
-plt.subplot(212)
-plt.title('final state')
-plt.xlabel('velocity')
-plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
-#attempt at plotting maxwell boltzmann distribution. not worth the time
-# plt.plot(np.linspace(0,7,100), maxwell(np.linspace(0,7,100)))
-# plt.plot(np.linspace(0,7,100), maxwell(np.linspace(0,7,100)), '-r')
-# plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
+hist = []
+edges = []
+
+for i in histogram_matrix:
+    hist.append(i[0])
+    edges.append(i[1])
+avg_hist = np.average(hist, axis=0)
+avg_edges = np.average(edges, axis=0)
+
+plt.bar(avg_hist, avg_edges)
+
+
 plt.show()
