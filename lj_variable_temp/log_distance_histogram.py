@@ -5,6 +5,10 @@ import scipy.special as ss
 path = 'dump.lammpstrj'
 
 def readfile(filename):
+    """
+    dumpfile reader made for calculating distance between atoms. largely based
+    on 'histogram_velocity_read'
+    """
     infile = open(filename, 'r')
     file = infile.readlines()
     num_atoms = int(file[3])
@@ -28,9 +32,9 @@ def readfile(filename):
         line = file[i]
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
+            print('check')
 
             i += 8
-            line = file[i]
 
         elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
         print(i, timestep, elem[0], j - (num_atoms+9)*timestep)

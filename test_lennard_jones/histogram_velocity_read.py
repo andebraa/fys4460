@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spacial import distance
+from scipy.spatial import distance
 
 path = 'dump.lammpstrj'
 
@@ -31,7 +31,7 @@ def readfile(filename):
             i += 8
 
         elem = line.split()
-        #print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
+        print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
         j = (i-(9+ 9*timestep))
         velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
