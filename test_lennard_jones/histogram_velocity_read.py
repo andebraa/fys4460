@@ -5,6 +5,15 @@ from scipy.spatial import distance
 path = 'dump.lammpstrj'
 
 def readfile(filename):
+    """
+    Function for reading dump file and printing a histogram of the distances
+
+    args:
+        filename (str): path to dump file
+
+    returns:
+        histogram_matrix (numpy histogram)
+    """
     infile = open(filename, 'r')
     file = infile.readlines()
     num_atoms = int(file[3])
@@ -28,7 +37,7 @@ def readfile(filename):
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
             histogram_matrix.append(np.histogram(velocity_values_i, bins=num_bins))
-            i += 8
+            i += 9
 
         elem = line.split()
         print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
