@@ -28,11 +28,13 @@ def readfile(filename):
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
             histogram_matrix.append(np.histogram(velocity_values_i, bins=num_bins))
-            i += 8
+            i += 9
+            line = file[i]
 
         elem = line.split()
-        print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
+        print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
         j = (i-(9+ 9*timestep))
+        print(j - ((num_atoms)*timestep))
         velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
 
