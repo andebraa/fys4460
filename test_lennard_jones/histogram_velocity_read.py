@@ -40,8 +40,9 @@ def readfile(filename):
             i += 9
 
         elem = line.split()
-        print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
+        print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
         j = (i-(9+ 9*timestep))
+        print(j - ((num_atoms)*timestep))
         velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
         i +=1
 
