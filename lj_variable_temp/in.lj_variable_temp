@@ -16,7 +16,7 @@ atom_style atomic #how to model the atom. atomic is the simplest form
 #---------------------ATOM DEFINITION-----------------------
 lattice fcc 0.01 #generates points in space for atoms. Face-Centered-Cubic shape
                  #a three dimensional lattice
-region simbox block 0 10 0 10 0 10 # defines a region with  0<xyz<10 and name simbox
+region simbox block 0 5 0 5 0 5 # defines a region with  0<xyz<10 and name simbox
 
 create_box 1 simbox #creates box that contains only 1 type of atoms.
 create_atoms 1 box
@@ -47,12 +47,12 @@ compute 2 all msd
 
 # 1 is name of dump (could be string) all atoms are dumped every 10 timesteps to the file
 #dump.lammostrj. the rest is what is dumped.
-dump 1 all custom 10 dump.lammps_$v id type x y z vx vy vz
-log log.lammps_$v #hopefully the name of the file
+dump 1 all custom 10 dump.lammps_$v_dev id type x y z vx vy vz
+log log.lammps_$v_dev #hopefully the name of the file
 thermo 10
 thermo_style custom step temp ke pe etotal press c_2[4]
 
-run 5000
+run 3000
 
 
 

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as ss
 
-path = 'dump.lammps_0.5'
+path = 'dump.lammps_0.5_dev'
 
 def readfile(filename):
     """
@@ -40,13 +40,14 @@ def readfile(filename):
                     jpos = particle_pos[j]
                     for k in range(j+1, num_atoms):
                         distance_values = np.linalg.norm((jpos,particle_pos[k]), axis=0)
+
             histogram_matrix.append(np.histogram(distance_values, bins=num_bins))
             i += 9
             line = file[i]
 
         elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
-        print(i, timestep, elem[0], j - (num_atoms+9)*timestep)
         j = (i-(9+ 9*timestep))
+        print(i, timestep, elem[0], j - ((num_atoms)*timestep))
         particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
         i +=1
 
@@ -65,8 +66,11 @@ for i in histogram_matrix:
     edges.append(i[1])
 avg_hist = np.average(hist, axis=0)
 avg_edges = np.average(edges, axis=0)
-
-plt.bar(avg_hist, avg_edges)
+print(np.shape(avg_hist))
+print(np.shape(avg_edges))
+print(avg_hist)
+print(avg_edges)
+plt.bar(avg_hist, avg_edges[:-1])
 
 
 plt.show()
