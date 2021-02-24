@@ -21,9 +21,9 @@ def readfile(filename):
     particle_pos = np.zeros((num_atoms, 3)) #x,y,z
     combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
     distance_values = np.zeros(combinations)
+
     histogram_matrix = []
 
-    print(num_atoms)
 
     timestep = 0
     i=9 #running index of each row of the file
@@ -53,6 +53,8 @@ def readfile(filename):
 
 
     infile.close()
+    print(distance_values)
+    print(combinations)
     return distance_values, histogram_matrix
 
 
