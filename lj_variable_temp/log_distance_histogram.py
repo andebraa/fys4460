@@ -20,14 +20,15 @@ def readfile(filename):
     num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
     particle_pos = np.zeros((num_atoms, 3)) #x,y,z
     combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
-    distance_values = np.zeros(combinations)
-
+    #distance_values = np.zeros(combinations+1)
+    distance_values = []
     histogram_matrix = []
 
 
     timestep = 0
     i=9 #running index of each row of the file
     j=0 #actual particle index
+    e = 0
     size = int(np.shape(file)[0])
     print(size)
     while i <= (size -1):
@@ -39,22 +40,25 @@ def readfile(filename):
                     #thesepos stores all the positions
                     jpos = particle_pos[j]
                     for k in range(j+1, num_atoms):
-                        distance_values = np.linalg.norm((jpos,particle_pos[k]), axis=0)
+                        distance_values.append(np.linalg.norm((jpos, particle_pos[k])))
+                        #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
+                        #e +=1
 
-            histogram_matrix.append(np.histogram(distance_values, bins=num_bins))
+                        histogram_matrix.append(np.histogram(distance_values, bins=num_bins))
+                        distance_values = []
             i += 9
             line = file[i]
 
         elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
         j = (i-(9+ 9*timestep))
-        print(i, timestep, elem[0], j - ((num_atoms)*timestep))
+        #print(i, timestep, elem[0], j - ((num_atoms)*timestep))
         particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
         i +=1
 
 
     infile.close()
-    print(distance_values)
     print(combinations)
+    #print(len(distance))
     return distance_values, histogram_matrix
 
 
