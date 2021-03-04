@@ -35,7 +35,7 @@ def readfile(filename):
         line = file[i]
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
-            if timestep in (10,11,10):
+            if timestep in (10,11,12,13,14):
                 for j in range(num_atoms):
                     #thesepos stores all the positions
                     jpos = particle_pos[j]
@@ -44,7 +44,7 @@ def readfile(filename):
                         #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
                         #e +=1
 
-                        histogram_matrix.append(np.histogram(distance_values, bins=num_bins))
+                        histogram_matrix.append(np.histogram(distance_values, bins=(0,0.3,0.6,0.9,1,1.3,1.6,1.9, 2.3, 2.6, 2.9, 3.3, 3.6, 3.9, 4.3, 4.6, 4.9, 5.3, 5.6, 5.9)))
                         distance_values = []
             i += 9
             line = file[i]
