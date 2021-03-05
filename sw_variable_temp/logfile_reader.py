@@ -4,7 +4,7 @@ Function for reading log file and plotting the temperature. for project 1 part b
 import numpy as np
 import matplotlib.pyplot as plt
 
-path = 'log.lammps_'
+path = 'log.lammps_sw'
 
 def readfile(filename, velocity):
     """
@@ -94,8 +94,8 @@ def readfile(filename, velocity):
 
 
 
-temps = ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0']
-temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+temps = ['']
+temps_int = [1200]
 # step, temp, press, kineng, poteng, toteng, dist = np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps)),\
@@ -120,7 +120,7 @@ for i,v in enumerate(temps):
     #oppgave f)
     plt.plot(step, dist, label=f'v:{v}')
     plt.xlabel('step')
-    plt.ylabel('dist [lj]')
+    plt.ylabel('distance l2 norm')
 
 
     #oppgave d)

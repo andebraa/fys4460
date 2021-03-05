@@ -1,8 +1,8 @@
 #run this on multiple partitions as
 # mpirun -np 3 lmp_g++ -partition 3x1 -in in.tad
 
+#---------------------INITIALIZATION-----------------------
 units metal
-
 atom_style  atomic
 atom_modify map array
 boundary p p p
@@ -10,7 +10,7 @@ boundary p p p
 variable myTemp equal 1200.0
 
 #diamond unit cell
-variable myL equal 4
+variable myL equal 10
 variable myscale equal 1.3
 
 variable a equal 5.431*${myscale}
@@ -47,8 +47,19 @@ neigh_modify  every 1 delay 10 check yes
 
 timestep      1.0e-3
 fix           1 all nve
+run 2000 #allows system to reach equilibrium
+
+compute 2 all msd
+# 2 is name of compute, can have the same name as fix or dump.
+# mse returns x^2, y^2, z^2, norm(x,y,z)
 
 # run simulation
+log log.lammps_sw
 thermo        10
-dump 1 all custom 10 dump.lammpstrj id type x y z vx vy vz
-run 100
+thermo_style custom step temp ke pe etotal press c_2[4]
+
+dump 1 all custom 10 dump.lammps_sw id type x y z vx vy vz
+run 5000
+
+undump 1
+clear
