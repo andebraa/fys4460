@@ -10,3 +10,5 @@ write_once('Data Boudary'){
     0.0 34.5 ylo yhi
     0.0 34.5 zlo zhi
 }
+#note; to run use
+#moltemplate.sh -atomstyle 'full' spce-water-system.lt

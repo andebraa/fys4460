@@ -21,7 +21,7 @@ SPCE{
     # atomID molID atomType charge coordX coordY coordZ
     write('Data Atoms'){
         $atom:O $mol:. @atom:O -0.8476 0.0000000 0.0000000 0.0000000
-        $atom_H1 $mol:. @atom:H 0.4238 0.8164904 0.5773590 0.0000000
+        $atom:H1 $mol:. @atom:H 0.4238 0.8164904 0.5773590 0.0000000
         $atom:H2 $mol:. @atom:H 0.4238 -0.8164904 0.5773590 0.0000000
     }
     #All 3 atom share same molID number which is unique for each water molecule
