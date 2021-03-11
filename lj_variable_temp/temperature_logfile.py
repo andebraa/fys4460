@@ -141,6 +141,14 @@ for i,v in enumerate(temps):
 # plt.ylabel('Energy [JL]')
 
 
+#part f
+pol_fit = np.polyfit(step[-100:], dist[-100:], 1)
+print(pol_fit)
+def polfit(x):
+    return pol_fit[0]*x + pol_fit[1]
+
+x = np.linspace(step[0], step[-1], 1000)
+plt.plot(x, polfit(x) )
 
 plt.legend()
 plt.show()
