@@ -5,7 +5,7 @@ wat = new SPCE [10].move(0,0,3.45)
                [10].move(0,3.45,0)
                [10].move(3.45,0,0)
 
-write_once('Data Boudary'){
+write_once('Data Boundary'){
     0.0 34.5 xlo xhi
     0.0 34.5 ylo yhi
     0.0 34.5 zlo zhi

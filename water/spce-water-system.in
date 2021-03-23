@@ -16,6 +16,11 @@ include "spce-water-system.in.settings"
 
 # ----------------- Run Section -----------------
 
+timestep    1.0
+dump        1 all custom 10 dump.lammpstrj id mol type x y z ix iy iz
+fix         fxnpt all npt temp 300.0 300.0 100.0 iso 1.0 1.0 1000.0 drag 1.0
+thermo      100
+run         1000
 # The lines above define the system you want to simulate.
 # What you do next is up to you.
 # Typically a user would minimize and equilibrate
@@ -39,4 +44,3 @@ include "spce-water-system.in.settings"
 #  -- Now, finally run the simulation --
 # run   50000
 #  ---- (end of examples) ----
-
