@@ -1,0 +1,23 @@
+3d lennard jones aragon gas
+
+variable b equal 5.72 #cell length in Å
+variable cell_num = 20 #number of cells, ya dumbwit 
+
+#---------------------INITIALIZATION-----------------------
+units lj
+dimension 3
+boundary p p p
+atom_style atomic #argon
+
+
+#---------------------ATOM DEFINITION-----------------------
+
+lattice fcc 0.01
+region simbox block 0 20*${b} 0 20*¤{b} 0 20*${b} #20 units cells of size b
+
+create_box 1 simbox
+create_atoms 1 box
+
+mass 1 1.0
+
+velocity all create 0.851 73702 #temp is T = 0.851

@@ -16,7 +16,7 @@ atom_style atomic #how to model the atom. atomic is the simplest form
 #---------------------ATOM DEFINITION-----------------------
 lattice fcc 0.01 #generates points in space for atoms. Face-Centered-Cubic shape
                  #a three dimensional lattice
-region simbox block 0 5 0 5 0 5 # defines a region with  0<xyz<10 and name simbox
+region simbox block 0 5 0 5 0 5 # defines a region with  0<xyz<5 and name simbox
 
 create_box 1 simbox #creates box that contains only 1 type of atoms.
 create_atoms 1 box
