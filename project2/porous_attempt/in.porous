@@ -35,7 +35,7 @@ mass 2 1.0
 
 #---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
-pair_coeff * * 1.0 1.0     #describes the paramaters for the interactions
+pair_coeff * * 3.0 3.0     #describes the paramaters for the interactions
                            #1 1 indicates we are describing interactions between
                            # type 1 and type 1 atoms. the rest is sigma, epsilon and
                            # cutoff distance respectivley.
@@ -64,9 +64,9 @@ set group stat type 2
 
 group moving region inside
 unfix 1
-fix 1 moving nvt temp ${T}
+fix 1 moving nvt temp ${T} ${T} 0.5
 
-fix 2 moving addforce 1.0 0.0 0.0 #particle flow
+fix 2 moving addforce 10.0 0.0 0.0 #particle flow
 
 #now wish to run the flow and equilibriate at constant temp
 
@@ -79,6 +79,6 @@ fix 1 moving nve #stat is still nvt, but it might not matter?
 
 dump 1 all custom 10 dump.lammps_flow_dev id type x y z vx vy vz
 
-run 100
+run 1000
 
 undump 1
