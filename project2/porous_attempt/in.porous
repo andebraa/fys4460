@@ -25,14 +25,17 @@ atom_style atomic #argon
 lattice fcc 0.01
 region simbox block 0 20 0 20 0 20 #20 units cells of size b
 
-create_box 1 simbox
+create_box 2 simbox
 create_atoms 1 box
 
-mass * 1.0 #gives the atoms mass 1 in relative LJ units
+
+
+mass 1 1.0 #gives the atoms mass 1 in relative LJ units
+mass 2 1.0
 
 #---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
-pair_coeff 1 1 1.0 1.0 3.0 #describes the paramaters for the interactions
+pair_coeff * * 1.0 1.0     #describes the paramaters for the interactions
                            #1 1 indicates we are describing interactions between
                            # type 1 and type 1 atoms. the rest is sigma, epsilon and
                            # cutoff distance respectivley.
@@ -55,7 +58,7 @@ region inside cylinder x ${mid} ${mid} ${r} 0 INF side in
 
 group stat region outside
 set group stat type 2
-set group stat vx 0.0 vy 0.0 vz 0.0
+#set group stat vx 0.0 vy 0.0 vz 0.0
 
 
 
