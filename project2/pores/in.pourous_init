@@ -10,13 +10,13 @@
 #3d lennard jones aragon gas
 
 variable b equal 5.72 #cell length in Å
-variable n_cell equal 20 #number of cells, ya dumbwit
+variable n_cell equal 30 #number of cells, ya dumbwit
 variable T equal 1.5
-variable n_pore equal 20 #number of pores
+variable n_pore equal 40 #number of pores
 variable seed equal 8392714
 
-variable r_low equal 20/${b} #size variation in spheres
-variable r_high equal 30/${b}
+variable r_low equal 10/${b} #size variation in spheres
+variable r_high equal 20/${b}
 
 #---------------------INITIALIZATION-----------------------
 units lj
@@ -53,7 +53,7 @@ print "test"
 velocity all create ${T} 73702 #temp is T = 0.851
 
 thermo 100
-run 200 #to reach equilibrium
+run 500 #to reach equilibrium
 
 
 #---------------------defining pores-----------------------
@@ -94,23 +94,29 @@ variable i loop ${loop_n} #combining pores cumulatively into different stat regi
     next i
 
 jump SELF union_mark
+
 region stat union 2 stat_${loop_n} r_${n_pore} side in #combining final pore into region
 region moving union 2 simbox stat side out #everything that is outside stat and in simbox
 
-set group stat type 2
-set group stat vx 0.0 vy 0.0 vz 0.0
+group moving_particles region moving
+group stat_particles region stat
+
+delete_atoms porosity moving 0.5 ${seed}
+
+set group stat_particles type 2
+set group stat_particles vx 0.0 vy 0.0 vz 0.0
 
 unfix 1
-fix 1 moving nvt temp ${T} ${T} 0.5
+fix 1 moving_particles nvt temp ${T} ${T} 0.5
 
-fix 2 moving addforce 1.0 0.0 0.0
+fix 2 moving_particles addforce 10.0 0.0 0.0
 
 #--------------------- equil with pores-----------------------
 thermo 100
 run 300
 
 unfix 1
-fix 1 moving nve
+fix 1 moving_particles nve
 
 #--------------------- simulation -----------------------
 
