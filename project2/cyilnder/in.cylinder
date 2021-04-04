@@ -49,7 +49,7 @@ velocity all create ${T} 73702 #temp is T = 0.851
 thermo 100
 run 600 #to reach equilibrium
 
-#cylinder definition
+#---------------------CYLINDER DEFINITION-----------------------
 variable mid equal ${cell_num}/2 #middle of pore
 variable r equal ${cell_num}/${b}
 region outside cylinder x ${mid} ${mid} ${r} 0 INF side out

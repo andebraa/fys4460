@@ -1,6 +1,6 @@
 #initialize argon gas
 #fix temperature and let the whole system equilibriate
-#create cylinder
+#create pores
 #fix moving to nvt and add foce
 #let system equilibriate again
 #fix nve
@@ -10,19 +10,20 @@
 #3d lennard jones aragon gas
 
 variable b equal 5.72 #cell length in Å
-variable cell_num equal 20 #number of cells, ya dumbwit
-variable T equal 0.851
-variable n_pores equal 20 #number of pores
+variable n_cell equal 20 #number of cells, ya dumbwit
+variable T equal 1.5
+variable n_pore equal 20 #number of pores
 variable seed equal 8392714
 
-variable r_low 10/${b} #size variation in spheres
-variable r_high 15/${b}
+variable r_low equal 20/${b} #size variation in spheres
+variable r_high equal 30/${b}
 
 #---------------------INITIALIZATION-----------------------
 units lj
 dimension 3
 boundary p p p
 atom_style atomic #argon
+
 
 
 #---------------------ATOM DEFINITION-----------------------
@@ -40,7 +41,7 @@ mass 2 1.0 #static particles
 
 #---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0      #defines the type of potential, and the cutoff in LJ units
-pair_coeff * * 3.0 3.0     #describes the paramaters for the interactions
+pair_coeff * * 1.0 1.0 3.0     #describes the paramaters for the interactions
                            #* * indicates we are describing interactions between
                            # type * and type * atoms. the rest is sigma, epsilon and
                            # cutoff distance respectivley.
@@ -52,45 +53,66 @@ print "test"
 velocity all create ${T} 73702 #temp is T = 0.851
 
 thermo 100
-run 600 #to reach equilibrium
+run 200 #to reach equilibrium
 
 
 #---------------------defining pores-----------------------
+
+
+print test
+
+variable i loop ${n_pore}
 label loop_mark
-variable i loop ${n}
-
-variable x equal random(0,${n}, ${seed})
-variable y equal random(0,${n}, ${seed})
-variable z equal random(0,${n}, ${seed})
-variable r equal random(${r_low}, ${r_high}, ${seed})
+    variable x      equal random(0,${n_cell},${seed})
+    variable y      equal random(0,${n_cell},${seed})
+    variable z      equal random(0,${n_cell},${seed})
+    variable r      equal random(${r_low},${r_high},${seed})
 
 
-region outside sphere x ${mid} ${mid} ${r} 0 INF side out
-region inside cylinder x ${mid} ${mid} ${r} 0 INF side in
+    region r_${i} sphere ${x} ${y} ${z} ${r}  side in
 
-next i
-jump loop_mark
+    next i
 
-group stat region outside
+jump SELF loop_mark
+
+#---------------------combining pores-----------------------
+region stat_0 union 2 r_1 r_2 side in #combining first two pores
+
+
+
+variable loop_n equal ${n_pore}-3
+
+label union_mark
+variable i loop ${loop_n} #combining pores cumulatively into different stat regions
+    variable j equal $i+2
+    variable l equal $i-1
+    region stat_${i} union 2 stat_${l} r_${j} side in
+
+
+    #region stat_${l} delete #deleting previous region
+
+    next i
+
+jump SELF union_mark
+region stat union 2 stat_${loop_n} r_${n_pore} side in #combining final pore into region
+region moving union 2 simbox stat side out #everything that is outside stat and in simbox
+
 set group stat type 2
-#set group stat vx 0.0 vy 0.0 vz 0.0
+set group stat vx 0.0 vy 0.0 vz 0.0
 
-
-
-group moving region inside
 unfix 1
 fix 1 moving nvt temp ${T} ${T} 0.5
 
-fix 2 moving addforce 10.0 0.0 0.0 #particle flow
+fix 2 moving addforce 1.0 0.0 0.0
 
-#now wish to run the flow and equilibriate at constant temp
-
+#--------------------- equil with pores-----------------------
 thermo 100
-run 600
+run 300
 
-#now fixing nve in order to run simulation
 unfix 1
-fix 1 moving nve #stat is still nvt, but it might not matter?
+fix 1 moving nve
+
+#--------------------- simulation -----------------------
 
 dump 1 all custom 10 dump.lammps_flow_dev id type x y z vx vy vz
 
