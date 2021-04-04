@@ -6,4 +6,5 @@ log.*
 */log.* 
 */*.pdf
 */*.png
-*.png 
+*.png
+project1/moltemplate 
