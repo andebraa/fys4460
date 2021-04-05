@@ -4,7 +4,7 @@ Function for reading log file and plotting the temperature. for project 1 part b
 import numpy as np
 import matplotlib.pyplot as plt
 
-path = 'log.lammps_sw'
+path = '../project2/pores/log.lammps_dev'
 
 def readfile(filename, velocity):
     """
@@ -32,7 +32,7 @@ def readfile(filename, velocity):
 
     size = int(np.shape(file)[0])
     step_num = 0
-    step_size = 0
+    step_size = 10 #thermo 10 call
 
     #skipping preamble, as well as extracting number of timesteps
     while i < 100: #assume preamble of log file is not more than 100 lines
@@ -49,7 +49,10 @@ def readfile(filename, velocity):
                 step_num = int(line[3:])
                 print(step_num)
             if line[:7] == 'thermo ':
+                print(line[:6])
                 step_size = int(line[6:])
+                print('CUUUUUUUUUUNT')
+                print(step_size)
 
     num_lines = int(step_num/step_size) #number of lines of actual data
     print(num_lines)
@@ -94,8 +97,10 @@ def readfile(filename, velocity):
 
 
 
+#temps = ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0']
+#temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 temps = ['']
-temps_int = [1200]
+
 # step, temp, press, kineng, poteng, toteng, dist = np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps)),\
@@ -103,14 +108,15 @@ temps_int = [1200]
 #                                                  np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps)),\
 #                                                  np.zeros(len(temps))
+
 avg_press = np.zeros(len(temps))
 for i,v in enumerate(temps):
-    step, temp, press, kineng, poteng, toteng, dist  = histogram_matrix= readfile(path, v)
+    step, temp, press, kineng, poteng, toteng, dist  = readfile(path, v)
 
     # #c part 1 temp varying init v
-    # plt.plot(step, temp, label=f'v = {v}')
-    # plt.xlabel('step')
-    # plt.ylabel('tempterautre [Lennard Jones]')
+    plt.plot(step, temp, label=f'v = {v}')
+    plt.xlabel('step')
+    plt.ylabel('tempterautre [Lennard Jones]')
 
     # #c part 2 pressure varying init v
     # plt.plot(step, press, label = f'v = {v}')
@@ -118,13 +124,13 @@ for i,v in enumerate(temps):
     # plt.ylabel('pressure [LJ]')
 
     #oppgave f)
-    plt.plot(step, dist, label=f'v:{v}')
-    plt.xlabel('step')
-    plt.ylabel('distance l2 norm')
+    #plt.plot(step, dist, label=f'v:{v}')
+    #plt.xlabel('step')
+    #plt.ylabel('dist [lj]')
 
 
     #oppgave d)
-    avg_press[i] = np.average(press)
+    #avg_press[i] = np.average(press)
 
 #oppgave d)
 # plt.plot(temps, avg_press, 'o')
@@ -140,6 +146,17 @@ for i,v in enumerate(temps):
 # plt.xlabel('timestep /10')
 # plt.ylabel('Energy [JL]')
 
+
+#part f
+"""
+pol_fit = np.polyfit(step[-100:], dist[-100:], 1)
+print(pol_fit)
+def polfit(x):
+    return pol_fit[0]*x + pol_fit[1]
+
+x = np.linspace(step[0], step[-1], 1000)
+plt.plot(x, polfit(x), label=f'a={pol_fit[0]:.6f}, b={pol_fit[1]:.6f}')
+"""
 
 
 plt.legend()

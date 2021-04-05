@@ -101,7 +101,7 @@ region moving union 2 simbox stat side out #everything that is outside stat and 
 group moving_particles region moving
 group stat_particles region stat
 
-delete_atoms porosity moving 0.5 ${seed}
+delete_atoms porosity moving 0.8 ${seed}
 
 set group stat_particles type 2
 set group stat_particles vx 0.0 vy 0.0 vz 0.0
@@ -119,9 +119,12 @@ unfix 1
 fix 1 moving_particles nve
 
 #--------------------- simulation -----------------------
-
+compute 1 moving_particles msd
+log log.lammps_dev #hopefully the name of the file
 dump 1 all custom 10 dump.lammps_flow_dev id type x y z vx vy vz
+thermo_style custom step temp ke pe etotal press c_1[4]
+thermo 10
 
-run 1000
+run 2000
 
 undump 1

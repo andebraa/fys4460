@@ -74,7 +74,7 @@ fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T_${T} mode vector
 # 2 is name of compute, can have the same name as fix or dump.
 
 # run simulation
-#log data/log.lammps_sw
+
 log data/log.T_${T}
 thermo        ${THERMO_STEP}
 #thermo_style custom step temp ke pe etotal press c_2[4]
