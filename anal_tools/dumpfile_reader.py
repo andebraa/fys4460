@@ -40,7 +40,7 @@ class dumpfile_reader():
         num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
         #dinstance histograms
         particle_pos = np.zeros((num_atoms, 3)) #x,y,z
-        combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
+        #combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
 
         velocity_values_i = np.zeros(num_atoms)
         #histogram_matrix = np.zeros((num_timesteps, num_bins, num_bins +1)) #the histogram for each timestep
@@ -67,18 +67,19 @@ class dumpfile_reader():
                             #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
                             #e +=1
 
-                    histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,18,20))))
+                    histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,20,num_bins))))
                     distance_values = []
-                else:
+                elif dist_eval == False:
                     histogram_matrix.append(np.histogram(velocity_values_i, bins=num_bins))
                 i += 9
+                line = file[i]
 
             elem = line.split()
-            print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
             j = (i-(9+ 9*timestep))
-            print(j - ((num_atoms)*timestep))
+            #print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
+            #print(j - ((num_atoms)*timestep))
             velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
-            #particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
+            particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
             i +=1
 
         infile.close()

@@ -19,7 +19,7 @@ def readfile(filename):
     num_bins = 30 #number of bins
     num_timesteps = int(np.shape(file)[0]/(num_atoms+9))
     particle_pos = np.zeros((num_atoms, 3)) #x,y,z
-    combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
+    #combinations = int((num_atoms*(num_atoms-1))/2) #num_atoms pick 2, med tilbakelegging
     #distance_values = np.zeros(combinations+1)
     distance_values = []
     histogram_matrix = []
@@ -28,14 +28,13 @@ def readfile(filename):
     timestep = 0
     i=9 #running index of each row of the file
     j=0 #actual particle index
-    e = 0
+    #e = 0
     size = int(np.shape(file)[0])
-    print(size)
     while i <= (size -1):
         line = file[i]
         if line[:14] == 'ITEM: TIMESTEP':
             timestep +=1
-            if timestep in (10,11,12):
+            if timestep in (10,11,12,13,14):
                 for j in range(num_atoms):
                     #thesepos stores all the positions
                     jpos = particle_pos[j]
@@ -44,26 +43,25 @@ def readfile(filename):
                         #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
                         #e +=1
 
-                histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,18,20))))
+                histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,20,num_bins))))
                 distance_values = []
             i += 9
             line = file[i]
 
         elem = line.split() #ITEM: ATOMS id type x y z vx vy vz
         j = (i-(9+ 9*timestep))
-        #print(i, timestep, elem[0], j - ((num_atoms)*timestep))
+        print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
+        print(j - ((num_atoms)*timestep))
         particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
         i +=1
 
 
     infile.close()
-    print(combinations)
-    #print(len(distance))
-    return distance_values, histogram_matrix
+    return histogram_matrix
 
 def histogram_plot():
 
-    dist_values, histogram_matrix= readfile(path)
+    histogram_matrix= readfile(path)
 
     hist = []
     edges = []
@@ -79,7 +77,6 @@ def histogram_plot():
     print(avg_hist)
     print(avg_edges)
     plt.bar(avg_hist, avg_edges[:-1])
-
 
     plt.show()
 
