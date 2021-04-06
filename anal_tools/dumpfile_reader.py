@@ -22,7 +22,7 @@ class dumpfile_reader():
         """
         self.path = path
         if variable_temps:
-            self.temps = [str(i) for i in a]
+            self.temps = [str(i) for i in variable_temps]
         else:
             self.temps = ['']
 
@@ -141,5 +141,5 @@ class dumpfile_reader():
 
 if __name__ == '__main__':
     init = dumpfile_reader(path)
-    init.distance_histogram()
-    #init.histogram_evolution()
+    #init.distance_histogram()
+    init.histogram_evolution()
