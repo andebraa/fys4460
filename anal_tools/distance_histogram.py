@@ -44,8 +44,8 @@ def readfile(filename):
                         #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
                         #e +=1
 
-                        histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,18,20))))
-                        distance_values = []
+                histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,18,20))))
+                distance_values = []
             i += 9
             line = file[i]
 
@@ -67,10 +67,11 @@ def histogram_plot():
 
     hist = []
     edges = []
-
     for i in histogram_matrix:
         hist.append(i[0])
         edges.append(i[1])
+    print(np.shape(hist))
+    print(np.shape(edges))
     avg_hist = np.average(hist, axis=0)
     avg_edges = np.average(edges, axis=0)
     print(np.shape(avg_hist))
