@@ -101,13 +101,7 @@ def readfile(filename, velocity):
 #temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 temps = ['']
 
-# step, temp, press, kineng, poteng, toteng, dist = np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps)),\
-#                                                  np.zeros(len(temps))
+
 
 avg_press = np.zeros(len(temps))
 for i,v in enumerate(temps):
