@@ -24,7 +24,7 @@ class dumpfile_reader():
         if variable_temps:
             self.temps = [str(i) for i in variable_temps]
         else:
-            self.temps = ['']
+            self.temps =''
 
     def readfile(self, timestep_eval = (10,11,12) ,dist_eval = False):
         filename = self.path
