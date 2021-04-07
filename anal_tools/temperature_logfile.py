@@ -117,6 +117,15 @@ class logfile_reader():
 
 
     def temp_plot(self, temps=''):
+        """
+        Plots tempterature as a function of time (steps)
+
+        args:
+            temps (list): List of ints. must be list!
+
+        returns:
+            nothing. Only plots
+        """
 
         # #c part 1 temp varying init v
         if isinstance(temps, list):
@@ -140,18 +149,38 @@ class logfile_reader():
             plt.ylabel('tempterautre [Lennard Jones]')
 
 
-    def press_plot(self, temps =''):
-        try:
-            press = self.press
-            step = self.step
-            temp = self.temp
-        except:
-            step, temp, press, kineng, poteng, toteng, dist  = self.readfile(path, v)
 
-        #c part 2 pressure varying init v
-        plt.plot(step, press, label = f't0 = {temp[0]}')
-        plt.xlabel('step')
-        plt.ylabel('pressure [LJ]')
+    def press_plot(self, temps =''):
+        """
+        Plots tempterature as a function of time (steps)
+
+        args:
+            temps (list): List of ints. must be list!
+
+        returns:
+            nothing. Only plots
+        """
+
+        # #c part 1 temp varying init v
+        if isinstance(temps, list):
+            for i,t in enumerate(temps):
+                step, temp, press, kineng, poteng, toteng, dist  = self.readfile(t)
+                avg_temp = np.average(temp)
+                plt.plot(step, temp, label=f'avg: {temp[0]}')
+            plt.xlabel('step')
+            plt.ylabel('tempterautre [Lennard Jones]')
+
+
+        else:
+            try:
+                temp = self.temp
+                step = self.step
+            except:
+                step, temp, press, kineng, poteng, toteng, dist  = self.readfile(v)
+
+            plt.plot(step, press, label=f't0 = {temp[0]}')
+            plt.xlabel('step')
+            plt.ylabel('pressure [Lennard Jones]')
 
 
     def dist_plot(self, temps = ''):
@@ -182,6 +211,7 @@ class logfile_reader():
         avg_press = np.zeros(len(temps))
         for i,v in enumerate(temps):
             step, temp, press, kineng, poteng, toteng, dist  = self.readfile(path, v)
+            len = len(step)
             avg_press[i] = np.average(press)
 
         #oppgave d)
@@ -210,7 +240,7 @@ if __name__ == '__main__':
     temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
     #temps = ''
     init = logfile_reader('../project1/lj_variable_temp/log.lammps_')
-    init.temp_plot(temps_int)
+    init.press_plot(temps_int)
 
     plt.legend()
     plt.show()
