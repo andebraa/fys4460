@@ -12,12 +12,12 @@
 variable b equal 5.72 #cell length in Å
 variable n_cell equal 30 #number of cells, ya dumbwit
 variable T equal 1.5
-variable n_pore equal 40 #number of pores
 variable seed equal 8392714
 
-variable r_low equal 10/${b} #size variation in spheres
-variable r_high equal 20/${b}
+variable r_low equal 2/${b} #size variation in spheres
+variable r_high equal 3/${b}
 
+variable n_pore equal 40 #number of pores
 #---------------------INITIALIZATION-----------------------
 units lj
 dimension 3
@@ -25,13 +25,13 @@ boundary p p p
 atom_style atomic #argon
 
 
-
+variable radius_temp loop 4 ${max_rad}
 #---------------------ATOM DEFINITION-----------------------
 
 lattice fcc 1
 region simbox block 0 20 0 20 0 20 #20 units cells of size b
 
-create_box 2 simbox
+create_box 2 simbox #2 is number of atom types
 create_atoms 1 box
 
 
@@ -101,7 +101,7 @@ region moving union 2 simbox stat side out #everything that is outside stat and 
 group moving_particles region moving
 group stat_particles region stat
 
-delete_atoms porosity moving 0.8 ${seed}
+delete_atoms porosity moving 0.5 ${seed}
 
 set group stat_particles type 2
 set group stat_particles vx 0.0 vy 0.0 vz 0.0
@@ -110,6 +110,11 @@ unfix 1
 fix 1 moving_particles nvt temp ${T} ${T} 0.5
 
 fix 2 moving_particles addforce 10.0 0.0 0.0
+
+variable num_moving equal count(moving_particles)/0.5
+variable num_stat equal count(stat_particles)
+variable phi equal ${num_moving}/(${num_moving}+${num_stat})
+print "phi ${phi}"
 
 #--------------------- equil with pores-----------------------
 thermo 100
@@ -120,7 +125,11 @@ fix 1 moving_particles nve
 
 #--------------------- simulation -----------------------
 compute 1 moving_particles msd
-log log.lammps_dev #hopefully the name of the file
+
+compute myRDF all  rdf 50 #radial distribution
+fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T${T}_phi${phi} mode vector
+
+log data/log.dev_phi${phi} #hopefully the name of the file
 dump 1 all custom 10 dump.lammps_flow_dev id type x y z vx vy vz
 thermo_style custom step temp ke pe etotal press c_1[4]
 thermo 10
