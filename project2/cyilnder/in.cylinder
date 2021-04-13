@@ -13,6 +13,8 @@ variable seed equal 482793
 variable b equal 5.72 #cell length in Å
 variable cell_num equal 20 #number of cells, ya dumbwit
 variable T equal 0.851
+variable sigma equal 3.405 #conversion factor for aragon gas
+variable rho equal 4/((${b})^3)
 
 #---------------------INITIALIZATION-----------------------
 units lj
@@ -23,8 +25,8 @@ atom_style atomic #argon
 
 #---------------------ATOM DEFINITION-----------------------
 
-lattice fcc 0.001
-region simbox block 0 20 0 20 0 20 #20 units cells of size b
+lattice fcc ${rho}
+region simbox block 0 ${cell_num} 0 ${cell_num} 0 ${cell_num} #${cell_num} units cells of size b
 
 create_box 2 simbox
 create_atoms 1 box
@@ -36,7 +38,7 @@ mass * 1.0 #gives the atoms mass 1 in relative LJ units
 
 #---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
-pair_coeff * * 3.0 3.0     #describes the paramaters for the interactions
+pair_coeff * * 1.0 1.0 3.0 #describes the paramaters for the interactions
                            #1 1 indicates we are describing interactions between
                            # type 1 and type 1 atoms. the rest is sigma, epsilon and
                            # cutoff distance respectivley.
@@ -53,8 +55,8 @@ run 1000 #to reach equilibrium
 #---------------------CYLINDER DEFINITION-----------------------
 variable mid equal ${cell_num}/2 #middle of pore
 variable r equal ${cell_num}/${b}
-region outside cylinder x ${mid} ${mid} ${r} 0 INF side out
-region inside cylinder x ${mid} ${mid} ${r} 0 INF side in
+region outside cylinder x ${mid} ${mid} ${r} 0 EDGE side out
+region inside cylinder x ${mid} ${mid} ${r} 0 EDGE side in
 
 
 group stat region outside
