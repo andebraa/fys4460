@@ -38,7 +38,7 @@ mass * 1.0 #gives the atoms mass 1 in relative LJ units
 
 #---------------------FORCEFIELDS-----------------------
 pair_style lj/cut 3.0 #defines the type of potential, and the cutoff in LJ units
-pair_coeff * * 1.0 1.0 3.0 #describes the paramaters for the interactions
+pair_coeff * * 3.0 3.0 #describes the paramaters for the interactions
                            #1 1 indicates we are describing interactions between
                            # type 1 and type 1 atoms. the rest is sigma, epsilon and
                            # cutoff distance respectivley.
