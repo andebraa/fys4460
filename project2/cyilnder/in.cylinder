@@ -15,6 +15,7 @@ variable cell_num equal 20 #number of cells, ya dumbwit
 variable T equal 0.851
 variable sigma equal 3.405 #conversion factor for aragon gas
 variable rho equal 4/((${b})^3)
+variable V equal vol #volume 
 
 #---------------------INITIALIZATION-----------------------
 units lj

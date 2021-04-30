@@ -124,7 +124,7 @@ fix 1 moving_particles nve
 #--------------------- simulation -----------------------
 #reset_timestep 0
 variable time equal step*dt
-compute cmvel moving_particles vcm
+compute cmvel moving_particles vcm/chunk
 
 compute _msd moving_particles msd
 
@@ -133,7 +133,7 @@ fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T${T}_phi${phi} mode v
 log data/log.rdf_phi${phi} #hopefully the name of the file
 
 log data/log.cs_phi${phi}
-dump 1 all custom 10 data/dump.lammps_flow_phi${phi} id type x y z vx vy vz
+dump 1 all custom 10 data/dump.lammps_flow_T${T}_phi${phi} id type x y z vx vy vz
 thermo_style custom step v_time temp ke pe etotal press c__msd[4] c_cmvelocity
 thermo 10
 
