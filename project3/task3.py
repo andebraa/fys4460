@@ -10,7 +10,7 @@ def matrix_gen(L, p):
     M[mask] = 0
     return M
 M = matrix_gen(10,0.1)
-print(M)
+# print(M)
 
 def find_clusters(array):
     clustered = np.empty_like(array)
@@ -24,10 +24,11 @@ def find_clusters(array):
     return clustered, cluster_count
 
 clustered, count = find_clusters(M)
-print(clustered)
-print(count)
-def spanning_ckeck(clustered):
-    spanning = False
+# print(clustered)
+# print(count)
+
+def spanning_check(clustered):
+    spanning=False
     while not spanning:
         for i in range(len(clustered[0,:])):
             for j in range(len(clustered[-1,:])):
@@ -38,8 +39,11 @@ def spanning_ckeck(clustered):
                     return spanning_cluster
 
         spanning = False
-        return spanning_cluster
+        print(spanning)
+        print(spanning_cluster, spanning)
+        return (spanning_cluster, spanning)
 
+spanning_cluster, spanning = spanning_check(clustered)
 if spanning:
     spanning_cluster_matrix = np.where(clustered==spanning_cluster)
     #M[spanning_cluster_matrix] = 99
