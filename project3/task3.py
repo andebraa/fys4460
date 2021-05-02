@@ -32,14 +32,19 @@ def spanning_check(clustered,M):
             for j in range(len(clustered[:,-1])):
 
                 if clustered[i,0] == clustered[j,-1] and M[i,0] != 0:
+                    empt = np.zeros_like(M)
                     print('cunt')
-                    spanning_cluster = clustered[i,j]
+                    spanning_cluster = clustered[i,0]
                     spanning=True
 
                     spanning_cluster_matrix = np.where(clustered==spanning_cluster)
-                    clustered[spanning_cluster_matrix] = np.max(clustered)+10
-                    #map = matplotlib.colors.Colormap('name')
-                    plt.imshow(clustered) #, cmap=map)
+                    clustered[spanning_cluster_matrix] = np.max(clustered)+16
+                    empt[spanning_cluster_matrix] = 2
+                    norm_inst = matplotlib.colors.Normalize(vmin=None, vmax=None, clip=False)
+                    plt.subplot(2,1,1)
+                    plt.imshow(clustered, norm=norm_inst) #,norm=norm_inst)
+                    plt.subplot(2,1,2)
+                    plt.imshow(empt)
                     plt.show()
                     return spanning_cluster, spanning
 
@@ -48,9 +53,9 @@ def spanning_check(clustered,M):
 
 
 def main():
-    L = 100
+    L = 200
     spanning = False
-    p = 0.5
+    p = 0.55
     while not spanning:
         print(p)
         m = matrix_gen(L,p)
