@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy import ndimage
-from scipy.ndimage import measurements
-
 
 def matrix_gen(L, p):
     M = np.random.uniform(0,1,(L,L))
@@ -24,7 +22,6 @@ def find_clusters(array):
             clustered[labelling == k] = cluster_count
             cluster_count += 1
     return clustered#, cluster_count
-
 
 
 def spanning_check(clustered,M):
@@ -56,89 +53,21 @@ def spanning_check(clustered,M):
         return spanning_cluster, spanning, Ms
 
 
-def L_and_P():
+def main():
     L_list = [2,4,8,16,32,64,128]
-    p_arr = np.linspace(0.1, 0.9, 50)
+    p_arr = np.linspace(0.1, 0.9, 100)
     P_list = np.zeros((len(L_list),len(p_arr)))
-    spanns = np.zeros((len(L_list),len(p_arr)))
-    iterations = 1000
+    iterations = 2000
     for i,L in enumerate(L_list):
         for iter in range(iterations): #to get an average for each variable
             spanning = False
             for j,p in enumerate(p_arr):
                 m = matrix_gen(L,p)
-                #clustered,_ = measurements.label(m)
-                clustered = find_clusters(m)
+                clustered=find_clusters(m)
                 spanning_cluster, spanning, Ms = spanning_check(clustered,m)
                 if spanning:
                     P_list[i,j] += Ms/L**2
-                    spanns[i,j] +=1
         P_list[i,:]/=iterations
-        spanns[i,:]/=iterations
-        plt.subplot(2,1,1)
-        plt.plot(p_arr, P_list[i,:], label=f'{L}')
-        plt.subplot(2,1,2)
-        plt.plot(p_arr, spanns[i,:], label=f'{L}')
-    plt.subplot(2,1,1)
-    plt.xlabel(r'p')
-    plt.ylabel(r'P(L,p)')
-    plt.legend()
-    plt.subplot(2,1,2)
-    plt.xlabel(r'p')
-    plt.ylabel(r"$\Pi(L,p)$")
-    plt.legend()
-    plt.show()
-
-def L():
-    L = 500
-    p_arr = np.linspace(0.1, 0.9, 50)
-    P_list = np.zeros(len(p_arr))
-    spanns = np.zeros(len(p_arr))
-    iterations = 1000
-
-    for iter in range(iterations): #to get an average for each variable
-        spanning = False
-        for j,p in enumerate(p_arr):
-            m = matrix_gen(L,p)
-            #clustered,_ = measurements.label(m)
-            clustered = find_clusters(m)
-            spanning_cluster, spanning, Ms = spanning_check(clustered,m)
-            if spanning:
-                P_list[j] += Ms/L**2
-                spanns[j] +=1
-    P_list/=iterations
-    spanns/=iterations
-    plt.subplot(2,1,1)
-    plt.plot(p_arr, P_list, label=f'{L}')
-    plt.xlabel(r'p')
-    plt.ylabel(r'P(L,p)')
-    plt.legend()
-    plt.subplot(2,1,2)
-    plt.plot(p_arr, spanns, label=f'{L}')
-    plt.xlabel(r'p')
-    plt.ylabel(r"$\Pi(L,p)$")
-    plt.legend()
-
-
-    plt.show()
-
-def clus_num_den():
-    iterations = 1000
-    L = 10
-    p = 0.6
-    #for i in range(iterations):
-    m = matrix_gen(L,p)
-    print(m)
-    clustered = find_clusters(m)
-    area = measurements.sum(m,clustered)
-    mask = np.where(m==0)
-    print(mask)
-    print(clustered)
-    clustered[mask] = 0
-    print(clustered)
-clus_num_den()
-# m = matrix_gen(30, 0.5)
-# plt.subplot(2,1,1)
-# plt.imshow(find_clusters(m))
-# plt.subplot(2,1,2)
-# plt.imshow(find_clusters_(m))
+        plt.plot(p_arr, P_list[i,:], label=f'{L,p}')
+main()
+plt.show()
