@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy import ndimage
+from numba import jit, cuda
 
-
+@jit(target ="cuda")
 def matrix_gen(L, p):
     M = np.random.uniform(0,1,(L,L))
     mask = M<p
@@ -12,6 +13,7 @@ def matrix_gen(L, p):
     M[mask] = 0
     return M
 
+@jit(target ="cuda")
 def find_clusters(array):
     clustered = np.empty_like(array)
     unique_vals = np.unique(array)
@@ -23,7 +25,7 @@ def find_clusters(array):
             cluster_count += 1
     return clustered#, cluster_count
 
-
+@jit(target ="cuda")
 def spanning_check(clustered,M):
     spanning=False
     spanning_cluster = 0
@@ -34,7 +36,6 @@ def spanning_check(clustered,M):
 
                 if clustered[i,0] == clustered[j,-1] and M[i,0] != 0: #checks both right and left edge, if the same cluster appears it's bounding
                     empt = np.zeros_like(M)
-                    print('cunt')
                     spanning_cluster = clustered[i,0]
                     spanning=True
 
@@ -42,32 +43,33 @@ def spanning_check(clustered,M):
                     clustered[spanning_cluster_matrix] = np.max(clustered)+16
                     empt[spanning_cluster_matrix] = 1
                     Ms = np.sum(empt)
-                    norm_inst = matplotlib.colors.Normalize(vmin=None, vmax=None, clip=False)
-                    plt.subplot(2,1,1)
-                    plt.imshow(clustered, norm=norm_inst) #,norm=norm_inst)
-                    plt.subplot(2,1,2)
-                    plt.imshow(empt)
-                    plt.show()
+                    # norm_inst = matplotlib.colors.Normalize(vmin=None, vmax=None, clip=False)
+                    # plt.subplot(2,1,1)
+                    # plt.imshow(clustered, norm=norm_inst) #,norm=norm_inst)
+                    # plt.subplot(2,1,2)
+                    # plt.imshow(empt)
+                    # plt.show()
                     return spanning_cluster, spanning, Ms
 
 
         return spanning_cluster, spanning, Ms
 
-
+@jit(target ="cuda") 
 def main():
-    L_list = [2,4]#,8,16,32,64,128]
-    p_arr = np.linspace(0.58, 0.6, 10)
-    P_list = np.zeros(len(L_list),len(p_arr))
+    L_list = [2,4,8,16,32]#,64,128]
+    p_arr = np.linspace(0.1, 0.6, 100)
+    P_list = np.zeros((len(L_list),len(p_arr)))
+    iterations = 1000
     for i,L in enumerate(L_list):
-        spanning = False
-        p = 0.55
-        for j,p in p_arr:
-            print(p)
-            m = matrix_gen(L,p)
-            clustered=find_clusters(m)
-            spanning_cluster, spanning, Ms = spanning_check(clustered,m)
-            p+=0.001
-            if spanning:
-                p[i,j] = Ms/L**2
-    plt.plot()
+        for iter in range(iterations): #to get an average for each variable
+            spanning = False
+            for j,p in enumerate(p_arr):
+                m = matrix_gen(L,p)
+                clustered=find_clusters(m)
+                spanning_cluster, spanning, Ms = spanning_check(clustered,m)
+                if spanning:
+                    P_list[i,j] += Ms/L**2
+        P_list[i,:]/=iterations
+        plt.plot(p_arr, P_list[i,:], label=f'{L,p}')
 main()
+plt.show()
