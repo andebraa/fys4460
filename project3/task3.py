@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib
+import pylab
 import matplotlib.pyplot as plt
 from scipy import ndimage
 from scipy.ndimage import measurements
+
 
 
 def matrix_gen(L, p):
@@ -126,16 +128,27 @@ def clus_num_den():
     iterations = 1000
     L = 10
     p = 0.6
-    #for i in range(iterations):
-    m = matrix_gen(L,p)
-    print(m)
-    clustered = find_clusters(m)
-    area = measurements.sum(m,clustered)
-    mask = np.where(m==0)
-    print(mask)
-    print(clustered)
-    clustered[mask] = 0
-    print(clustered)
+    tot_area = []
+    for i in range(iterations):
+        m = matrix_gen(L,p)
+
+        clustered, clustered_number = measurements.label(m)
+        labelList = pylab.arange(clustered_number+1)
+        area = measurements.sum(m, clustered, labelList)
+        tot_area.append(area)
+    num, hist = pylab.histogram(tot_area, bins=int(max(tot_area)))
+    s = 0.5*(hist[1:]+hist[:-1])
+    nsp = n/(L*nsamp)
+    sxi = -1.0/pylab.log(p)
+    nsptheory = (1-p)**2*pylab.exp(-s/sxi)
+    pylab.plot(s,nsp,'o',s,nsptheory,'-')
+    pylab.xlabel('$s$')
+    pylab.ylabel('$n(s,p)$')
+    pylab.show()
+
+
+
+#test()
 clus_num_den()
 # m = matrix_gen(30, 0.5)
 # plt.subplot(2,1,1)
