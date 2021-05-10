@@ -4,6 +4,7 @@ import pylab
 import matplotlib.pyplot as plt
 from scipy import ndimage
 from scipy.ndimage import measurements
+from tqdm import tqdm
 
 
 
@@ -124,34 +125,97 @@ def L():
 
     plt.show()
 
-def clus_num_den():
+def clus_num_den(L=200, p=0.5, iterations = 1000, log_base =2, logarit_bins = False):
+
     iterations = 1000
     L = 10
-    p = 0.6
-    tot_area = []
+
+    tot_area = pylab.array([])
     for i in range(iterations):
         m = matrix_gen(L,p)
 
         clustered, clustered_number = measurements.label(m)
-        labelList = pylab.arange(clustered_number+1)
-        area = measurements.sum(m, clustered, labelList)
-        tot_area.append(area)
+        labellist = pylab.arange(clustered_number+1)
+        area = measurements.sum(m, clustered, labellist)
+        tot_area = pylab.append(tot_area, area)
+
     num, hist = pylab.histogram(tot_area, bins=int(max(tot_area)))
     s = 0.5*(hist[1:]+hist[:-1])
-    nsp = n/(L*nsamp)
-    sxi = -1.0/pylab.log(p)
-    nsptheory = (1-p)**2*pylab.exp(-s/sxi)
-    pylab.plot(s,nsp,'o',s,nsptheory,'-')
-    pylab.xlabel('$s$')
-    pylab.ylabel('$n(s,p)$')
-    pylab.show()
+    nsp = num/(L*iterations)
+
+    if not logarit_bins:
+        ret = s, nsp
+
+    elif logarit_bins:
+        logamax = pylab.ceil(pylab.log(max(s))/(pylab.log(log_base)))
+        logbins = log_base**pylab.arange(0,logamax) #this generates a^i bins
+        nl, nlbins = pylab.histogram(tot_area, bins=logbins)
+
+        ds = pylab.diff(logbins)
+        bins = 0.5*(logbins[1:] + logbins[:-1])
+        log_hist_normed = nl/(L**2*ds) #M?
+        ret =  bins, log_hist_normed
+
+    return ret
+
+def plot_nsp():
+    p_arr = np.linspace(0.5,0.63, 5)
+    L = 100
+    log_base = 2
+    for p in p_arr:
+        s, nsp = clus_num_den(L=L,p=p, iterations = 1000, log_base=log_base, logarit_bins = False)
+        sxi = -1.0/pylab.log(p)
+        nsptheory = (1-p)**2*pylab.exp(-s/sxi)
+        #pylab.plot(s,nsp,'o',s,nsptheory,'-')
+        i = pylab.nonzero(nsp)
+        pylab.subplot(2,1,1)
+        pylab.loglog(s[i], nsp[i])
+        pylab.xlabel('$s$')
+        pylab.ylabel('$n(s,p)$')
+        bins, log_hist_normed = clus_num_den(L=L,p=p, iterations = 1000, log_base=log_base, logarit_bins = True)
+        pylab.subplot(2,1,2)
+        pylab.loglog(bins,log_hist_normed)
+    plt.show()
+
+def plot_nsp2(produce_data=False):
+    pc = 0.59275
+    L_vals = [2**k for k in range(4, 10)]
+    n_samples = 1000
+    n_bins = 20
+    logbase = 10
+    if produce_data:
+        for i, L in tqdm(enumerate(L_vals)):
+            s, nsp = clus_num_den(L, pc, n_samples, logbase)
+            np.save(f"./data/nsp_varying_L/nsp_p{pc:.5f}_L{L}.npy", np.vstack((s, nsp)))
+            plt.loglog(s, nsp, label=f'L={L}')
+            if L == L_vals[-1]:
+                tau, b = np.polyfit(np.log(s), np.log(nsp), deg=1)
+                plt.loglog(s, np.exp(b)*s**tau, 'k--', label=r'Fit of $n(s,p)\propto s^{%.3f}$' %tau)
+                tau *= -1
+                print(f"tau={tau}")
+    else:
+
+        for i, L in enumerate(L_vals):
+            filename = f"./data/nsp_varying_L/nsp_p{pc:.5f}_L{L}.npy"
+            s, nsp = np.load(filename)
+            plt.loglog(s, nsp, label=f'L={L}')
+            if L == L_vals[-1]:
+                tau, b = np.polyfit(np.log(s), np.log(nsp), deg=1)
+                plt.loglog(s, np.exp(b)*s**tau, 'k--', label=r'Fit of $n(s,p)\propto s^{%.3f}$' %tau)
+                tau *= -1
+                print(f"tau={tau}")
+
+    plt.xlabel(r's')
+    plt.ylabel(r'n(s,p)')
+    plt.legend()
+    plt.show()
 
 
 
-#test()
-clus_num_den()
+plot_nsp()
 # m = matrix_gen(30, 0.5)
 # plt.subplot(2,1,1)
 # plt.imshow(find_clusters(m))
 # plt.subplot(2,1,2)
-# plt.imshow(find_clusters_(m))
+# plt.imshow(find_clusters(m))
+# plt.show()
