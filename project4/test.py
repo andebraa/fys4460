@@ -4,6 +4,7 @@ LL = [25, 50, 100, 200]
 p = linspace(0.4,0.75, 50)
 nL = len(LL)
 nx = len(p)
+Ni = zeros(nx)
 P = zeros((nx,nL), float)
 for iL in range(nL):
     L = LL[iL]
@@ -17,7 +18,7 @@ for iL in range(nL):
             perc = perc_x[where(perc_x >0)]
             if (len(perc)>0):
                 Ni[ip] = Ni[ip] +1
-                area = measurments.sum(m,lw, perc[0])
+                area = measurements.sum(m,lw, perc[0])
                 P[ip] = P[ip] + area
     P[:,iL] = P[:,iL]/((L*L)*N)
 for iL in range(nL):

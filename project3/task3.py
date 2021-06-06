@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 from scipy.ndimage import measurements
 from tqdm import tqdm
-
+np.random.seed(80085)
 
 
 def matrix_gen(L, p):
@@ -177,33 +177,23 @@ def plot_nsp():
         pylab.loglog(bins,log_hist_normed)
     plt.show()
 
-def plot_nsp2(produce_data=False):
+def plot_nsp2():
     pc = 0.59275
-    L_vals = [2**k for k in range(4, 10)]
+    L_vals = [16, 32, 64, 128, 256, 512]
+    print(L_vals)
     n_samples = 1000
     n_bins = 20
     logbase = 10
-    if produce_data:
-        for i, L in tqdm(enumerate(L_vals)):
-            s, nsp = clus_num_den(L, pc, n_samples, logbase)
-            np.save(f"./data/nsp_varying_L/nsp_p{pc:.5f}_L{L}.npy", np.vstack((s, nsp)))
-            plt.loglog(s, nsp, label=f'L={L}')
-            if L == L_vals[-1]:
-                tau, b = np.polyfit(np.log(s), np.log(nsp), deg=1)
-                plt.loglog(s, np.exp(b)*s**tau, 'k--', label=r'Fit of $n(s,p)\propto s^{%.3f}$' %tau)
-                tau *= -1
-                print(f"tau={tau}")
-    else:
 
-        for i, L in enumerate(L_vals):
-            filename = f"./data/nsp_varying_L/nsp_p{pc:.5f}_L{L}.npy"
-            s, nsp = np.load(filename)
-            plt.loglog(s, nsp, label=f'L={L}')
-            if L == L_vals[-1]:
-                tau, b = np.polyfit(np.log(s), np.log(nsp), deg=1)
-                plt.loglog(s, np.exp(b)*s**tau, 'k--', label=r'Fit of $n(s,p)\propto s^{%.3f}$' %tau)
-                tau *= -1
-                print(f"tau={tau}")
+    for i, L in tqdm(enumerate(L_vals)): #tqdm is loading bar
+        s, nsp = clus_num_den(L, pc, n_samples, logbase)
+        plt.loglog(s, nsp, label=f'L={L}')
+        if L == L_vals[-1]:
+            tau, b = np.polyfit(np.log(s), np.log(nsp), deg=1)
+            plt.loglog(s, np.exp(b)*s**tau, 'k--', label=r'Fit of $n(s,p)\propto s^{%.3f}$' %tau)
+            tau *= -1
+            print(f"tau={tau}")
+
 
     plt.xlabel(r's')
     plt.ylabel(r'n(s,p)')
@@ -212,8 +202,9 @@ def plot_nsp2(produce_data=False):
 
 
 
-plot_nsp()
-# m = matrix_gen(30, 0.5)
+#plot_nsp2()
+
+# m = matrix_gen(30, 0.6)
 # plt.subplot(2,1,1)
 # plt.imshow(find_clusters(m))
 # plt.subplot(2,1,2)
