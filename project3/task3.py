@@ -61,10 +61,10 @@ def spanning_check(clustered,M):
 
 def L_and_P():
     """
-    same as L but for multiple sizes L 
+    same as L but for multiple sizes L
     """
-    #32,64,128
-    L_list = [2,4,8,16]
+
+    L_list = [2,4,8,16,32,64,128]
     p_arr = np.linspace(0.1, 0.9, 50)
     P_list = np.zeros((len(L_list),len(p_arr)))
     spanns = np.zeros((len(L_list),len(p_arr)))
@@ -94,6 +94,34 @@ def L_and_P():
     plt.xlabel(r'p')
     plt.ylabel(r"$\Pi(L,p)$")
     plt.legend()
+    plt.show()
+
+def p_vs_L():
+    """
+    for plotting P(pc,L) to show that P goes to zero for L -> infty
+    (see fig 6.1)
+    """
+    L_list = [2,4,8,16,32,64,128]
+    #p_arr = 0.5927
+    p = 0.5927
+    P_list = np.zeros(len(L_list))
+    spanns = np.zeros(len(L_list))
+    iterations = 1000
+    for i,L in enumerate(L_list):
+        for iter in range(iterations): #to get an average for each variable
+            spanning = False
+            m = matrix_gen(L,p)
+            #clustered,_ = measurements.label(m)
+            clustered = find_clusters(m)
+            spanning_cluster, spanning, Ms = spanning_check(clustered,m)
+            if spanning:
+                P_list[i] += Ms/L**2
+                spanns[i] +=1
+        P_list[i]/=iterations
+        spanns[i]/=iterations
+    plt.plot(L_list, P_list, '-o')
+    plt.xlabel('L')
+    plt.ylabel('P(pc)')
     plt.show()
 
 def L():
@@ -210,7 +238,7 @@ def plot_nsp2():
 
 
 #plot_nsp()
-L()
+p_vs_L()
 
 # m = matrix_gen(30, 0.6)
 # plt.subplot(2,1,1)

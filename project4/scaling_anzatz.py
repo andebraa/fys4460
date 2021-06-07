@@ -3,7 +3,7 @@ from scipy.ndimage import measurements
 from matplotlib.colors import ListedColormap
 from scipy.sparse import spdiags, dia_matrix, coo_matrix
 from scipy.sparse.linalg import spsolve
-
+import num_tools as nt
 
 Lvals = [50,100,200,400]
 pVals = pl.logspace(pl.log10(0.58), pl.log10(0.85), 20)
@@ -99,9 +99,9 @@ for iL in range(len(Lvals)):
             # zz now contains the spanning cluster
             zzz = zz.T
             #generate band lattice from this
-            g = sitetobond(zzz)
+            g = nt.sitetobond(zzz)
             #generate conductivity matrix
-            Pvec, c_eff = FIND_COND(g,L,L)
+            Pvec, c_eff = nt.FIND_COND(g,L,L)
             C[pIndex, iL] = C[pIndex, iL] + c_eff
         C[pIndex, iL] = C[pIndex, iL]/nsamples
 for iL in range(len(Lvals)):
