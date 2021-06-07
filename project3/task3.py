@@ -60,7 +60,11 @@ def spanning_check(clustered,M):
 
 
 def L_and_P():
-    L_list = [2,4,8,16,32,64,128]
+    """
+    same as L but for multiple sizes L 
+    """
+    #32,64,128
+    L_list = [2,4,8,16]
     p_arr = np.linspace(0.1, 0.9, 50)
     P_list = np.zeros((len(L_list),len(p_arr)))
     spanns = np.zeros((len(L_list),len(p_arr)))
@@ -93,11 +97,14 @@ def L_and_P():
     plt.show()
 
 def L():
-    L = 500
+    """
+    Generates a P and pi plot vs p for a single size L
+    """
+    L = 50
     p_arr = np.linspace(0.1, 0.9, 50)
     P_list = np.zeros(len(p_arr))
     spanns = np.zeros(len(p_arr))
-    iterations = 1000
+    iterations = 10
 
     for iter in range(iterations): #to get an average for each variable
         spanning = False
@@ -202,7 +209,8 @@ def plot_nsp2():
 
 
 
-#plot_nsp2()
+#plot_nsp()
+L()
 
 # m = matrix_gen(30, 0.6)
 # plt.subplot(2,1,1)

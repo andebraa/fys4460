@@ -1,6 +1,10 @@
 from pylab import *
 from scipy.ndimage import measurements
-LL = [25, 50, 100, 200]
+"""
+Finite size scaling of P(p,L). section 6.2.
+This produces mostly the same plot as task3.py function L_and_P
+"""
+LL = [25, 50, 100, 120,150,180]
 p = linspace(0.4,0.75, 50)
 nL = len(LL)
 nx = len(p)
@@ -8,6 +12,7 @@ Ni = zeros(nx)
 P = zeros((nx,nL), float)
 for iL in range(nL):
     L = LL[iL]
+    print(L)
     N = int(2000*25/L)
     for i in range(N):
         z = rand(L,L)
@@ -23,6 +28,8 @@ for iL in range(nL):
     P[:,iL] = P[:,iL]/((L*L)*N)
 for iL in range(nL):
     L = LL[iL]
-    plot(p,P[:,iL])
-    ylabel('P')
-    xlabel(p)
+    plot(p,P[:,iL], label=L)
+ylabel('P')
+xlabel('p(p,L)')
+plt.legend()
+plt.show()
