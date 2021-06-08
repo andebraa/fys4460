@@ -65,10 +65,10 @@ def data_collapse():
     """
 
     L_list = [25,50,100,200]
-    p_pc = np.linspace(0, 1, 20) #supposed to be p-pc
-    P_list = np.zeros((len(L_list),len(p_pc)))
+    p_pc = np.linspace(0, 1, 30) #supposed to be p-pc
+    P_list = np.zeros((len(L_list),len(p_pc))) #this is P
     spanns = np.zeros((len(L_list),len(p_pc)))
-    iterations = 10
+    iterations = 30
     for i,L in enumerate(L_list):
         for iter in range(iterations): #to get an average for each variable
             spanning = False
@@ -82,8 +82,8 @@ def data_collapse():
                     spanns[i,j] +=1
         P_list[i,:]/=iterations
         spanns[i,:]/=iterations
-        D_d = 0.11
-        mu = 4/3
+        D_d = -0.11
+        mu = 0.0001
 
         plt.plot(p_pc*L**(mu), P_list[i,:]*L**(-D_d), label=f'{L}')
 
