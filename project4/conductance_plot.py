@@ -4,15 +4,17 @@ from matplotlib.colors import ListedColormap
 from scipy.sparse import spdiags, dia_matrix, coo_matrix
 from scipy.sparse.linalg import spsolve
 from tqdm import tqdm
-
-
-Lvals = [50,100,200,400]
+"""
+See section 10.1.3 measuring the conductance 
+"""
+Lvals = [400]
+# pVals = logspace(log10(0.58), log10(0.85), 20)
 pVals = pl.logspace(pl.log10(0.58), pl.log10(0.85), 20)
-
-C = pl.zeros((len(pVals), len(Lvals)),float)
-P = pl.zeros((len(pVals), len(Lvals)),float)
-nsamples = 20
-mu = pl.zeros(len(Lvals))
+C = pl.zeros((len(pVals),len(Lvals)),float)
+P = pl.zeros((len(pVals),len(Lvals)),float)
+# nSamples = 600
+nSamples = 600
+G = pl.zeros(len(Lvals))
 
 def sitetobond(z):
     #Function to convert the site network z(L,L) into a (L*L,2) bond
@@ -82,32 +84,37 @@ def MK_EQSYSTEM(A,X,Y):
 
 for iL in range(len(Lvals)):
     L = Lvals[iL]
-    for pIndex in range(len(pVals)):
+    lx = L
+    ly = L
+    for pIndex in tqdm(range(len(pVals))):
         p = pVals[pIndex]
-        for i in tqdm(range(nsamples)):
+        ncount = 0
+        for j in tqdm(range(nSamples)):
             ncount = 0
             perc = []
             while (len(perc)==0):
-                ncount = ncount +1
+                ncount = ncount + 1
                 if (ncount > 1000):
-                    print('error')
+                    print("Couldn’t make percolation cluster...")
                     break
-                z = pl.rand(L,L) < p
+                z=pl.rand(lx,ly)<p
                 lw,num = measurements.label(z)
-                perc_x = pl.intersect1d(lw[0,:], lw[-1,:])
+                perc_x = pl.intersect1d(lw[0,:],lw[-1,:])
                 perc = perc_x[pl.where(perc_x > 0)]
-            if len(perc) > 0:
-                zz  = pl.asarray((lw == perc[0]))
-                # zz now contains the spanning cluster
+            if len(perc) > 0: # Found spanning cluster
+                area = measurements.sum(z, lw, perc[0])
+                P[pIndex,iL] = P[pIndex,iL] + area # Find P(p,L)
+                zz = pl.asarray((lw == perc[0])) # zz=spanning cluster
                 zzz = zz.T
-                #generate band lattice from this
-                g = sitetobond(zzz)
-                #generate conductivity matrix
-                Pvec, c_eff = FIND_COND(g,L,L)
-                C[pIndex, iL] = C[pIndex, iL] + c_eff
-        C[pIndex, iL] = C[pIndex, iL]/nsamples
-for iL in range(len(Lvals)):
-    L = Lvals[iL]
-    pl.plot(pVals, C[:,iL], label='L=' + str(L))
+                g = sitetobond (zzz) # Generate bond lattice
+                Pvec, c_eff = FIND_COND(g, lx, ly) # Find conducance
+                C[pIndex,iL] = C[pIndex,iL] + c_eff
+        C[pIndex,iL] = C[pIndex,iL]/nSamples
+        P[pIndex,iL] = P[pIndex,iL]/(nSamples*L*L)
+
+pl.plot(pVals,C[:,-1],'-ob',label='$G$')
+pl.plot(pVals,P[:,-1],'-or',label='$P$')
 pl.legend()
+pl.xlabel(r"$p$")
+pl.ylabel(r"$G,P$")
 pl.show()
