@@ -68,7 +68,7 @@ def data_collapse():
     p_pc = np.linspace(0, 1, 30) #supposed to be p-pc
     P_list = np.zeros((len(L_list),len(p_pc))) #this is P
     spanns = np.zeros((len(L_list),len(p_pc)))
-    iterations = 30
+    iterations = 300
     for i,L in enumerate(L_list):
         for iter in range(iterations): #to get an average for each variable
             spanning = False
@@ -191,10 +191,40 @@ def clus_num_den(L=200, p=0.5, iterations = 1000, log_base =2, logarit_bins = Fa
 
     return ret
 
+def find_nearest(array, value):
+    "stolen from stackexchange"
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
 
-data_collapse()
+def nsp():
+    pc = 0.59275
+    L_vals = [16, 32, 128, 256]
+    n_samples = 1000
+    n_bins = 20
+    logbase = 10
 
-#plot_nsp()
+    for i, L in enumerate(L_vals):
+        s, nsp = clus_num_den(L, pc, n_samples, logbase)
+        plt.loglog(s, nsp, label=f'L={L}')
+        if L == L_vals[-1]:
+            start_indx = find_nearest(s,2.6)
+            end_indx = find_nearest(s, 8.57)
+            tau, b = np.polyfit(np.log(s[start_indx: end_indx]), np.log(nsp[start_indx:end_indx]), deg=1)
+            plt.loglog(s, np.exp(b)*s**tau, 'k', label=r'tau: %.3f' %tau)
+            tau *= -1
+            print(f"tau={tau}")
+
+
+    plt.xlabel(r's')
+    plt.ylabel(r'n(s,p)')
+    plt.legend()
+    plt.show()
+
+
+#data_collapse()
+
+nsp()
 
 
 # m = matrix_gen(30, 0.6)

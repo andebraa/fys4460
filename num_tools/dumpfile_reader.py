@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import distance
 
 #path = 'dump.lammpstrj'
-path = '../project1/lj_variable_temp/dump.lammps_0.5_dev'
+path = '../project1/presentation_test/dump.lammps_0.5_dev'
 class dumpfile_reader():
     """
     class for reading and extracting dumpfile items.
@@ -104,12 +104,12 @@ class dumpfile_reader():
 
         plt.subplot(211)
         plt.title('initial state')
-        plt.bar(histogram_matrix[0][1][:-1], histogram_matrix[0][0])
+        plt.bar(histogram_matrix[0][1][:-1], histogram_matrix[0][0], width=0.2)
         plt.xlabel('velocity')
         plt.subplot(212)
         plt.title('final state')
         plt.xlabel('velocity')
-        plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0])
+        plt.bar(histogram_matrix[-1][1][:-1], histogram_matrix[-1][0], width=0.2)
         plt.show()
 
     def distance_histogram(self):

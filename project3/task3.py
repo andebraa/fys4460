@@ -15,8 +15,6 @@ def matrix_gen(L, p):
     mask = np.logical_not(mask)
     M[mask] = 0
     return M
-
-
 def find_clusters(array):
     clustered = np.empty_like(array)
     unique_vals = np.unique(array)
@@ -27,9 +25,6 @@ def find_clusters(array):
             clustered[labelling == k] = cluster_count
             cluster_count += 1
     return clustered#, cluster_count
-
-
-
 def spanning_check(clustered,M):
     spanning=False
     spanning_cluster = 0
@@ -215,12 +210,11 @@ def plot_nsp():
 def plot_nsp2():
     pc = 0.59275
     L_vals = [16, 32, 64, 128, 256, 512]
-    print(L_vals)
     n_samples = 1000
     n_bins = 20
     logbase = 10
 
-    for i, L in tqdm(enumerate(L_vals)): #tqdm is loading bar
+    for i, L in enumerate(L_vals):
         s, nsp = clus_num_den(L, pc, n_samples, logbase)
         plt.loglog(s, nsp, label=f'L={L}')
         if L == L_vals[-1]:
@@ -237,8 +231,8 @@ def plot_nsp2():
 
 
 
-#plot_nsp()
-p_vs_L()
+plot_nsp2()
+#p_vs_L()
 
 # m = matrix_gen(30, 0.6)
 # plt.subplot(2,1,1)

@@ -5,9 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import re
+import os
 
-path = '../project2/pores/log.dev_phi0.14845113982142'
-path = '../project2/pores/data/'
+#path = '../project2/pores/log.dev_phi0.14845113982142'
+#path = '../project2/pores/data/'
 class logfile_reader():
     """
     class for reading and extracting logfiles
@@ -22,12 +23,13 @@ class logfile_reader():
         """
         self.base_path = path
 
-        self.filenames = os.listdir(path)
-        logfiles = [i for i in files if 'log' in i] #gather up the logfiles
-        self.files = {}
-        for i in logfiles:
-            elem = re.split(r'_phi|T',i).strip('_') #NOTE FOLLOW NAMING CONVENSION
-            files{i:[elem[1], elem[2]]} #dictionary, {filename:[phi,T]}
+        #for PHI variations
+        # self.filenames = os.listdir(path)
+        # logfiles = [i for i in self.filenames if 'log' in i] #gather up the logfiles
+        # self.files = {}
+        # for i in logfiles:
+        #     elem = re.split(r'_phi|T',i).strip('_') #NOTE FOLLOW NAMING CONVENSION
+        #     files = {i:[elem[1], elem[2]]} #dictionary, {filename:[phi,T]}
 
 
 
@@ -51,8 +53,10 @@ class logfile_reader():
                             lammps
         """
 
-
-        infile = open(filename, 'r')
+        try:
+            infile = open(filename, 'r')
+        except:
+            infile = open(self.base_path + filename, 'r')
         file = infile.readlines()
 
         i=0
@@ -68,7 +72,7 @@ class logfile_reader():
                 i+=1
                 print('check')
                 args = line.split()
-                if len(args) != 7: #checking if maybe some collumns are missing or different
+                if len(args) != 9: #checking if maybe some collumns are missing or different
                     raise ValueError('Number of collumns in logfile does not match with expected')
                 break
             else:
@@ -98,12 +102,14 @@ class logfile_reader():
             step_, time_, temp_, kineng_, poteng_, toteng_, press_, dist_, cm_vel_= line.split()
             step_, time_, temp_, kineng_, poteng_, toteng_, press_, dist_, cm_vel_ = \
                                                                     int(step_),    \
+                                                                    int(time_),    \
                                                                     float(temp_),  \
                                                                     float(kineng_),\
                                                                     float(poteng_),\
                                                                     float(toteng_),\
                                                                     float(press_), \
-                                                                    float(dist_)
+                                                                    float(dist_),  \
+                                                                    float(cm_vel_)
 
             step[j] = step_
             time[j] = time_
@@ -148,25 +154,25 @@ class logfile_reader():
         """
 
         # #c part 1 temp varying init v
-        if isinstance(temps, list):
-            for i,t in enumerate(temps):
-                step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(t)
-                avg_temp = np.average(temp)
-                plt.plot(step, temp, label=f'avg: {temp[0]}')
-            plt.xlabel('step')
-            plt.ylabel('tempterautre [Lennard Jones]')
+        # if isinstance(temps, list):
+        #     for i,t in enumerate(temps):
+        #         step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(t)
+        #         avg_temp = np.average(temp)
+        #         plt.plot(step, temp, label=f'avg: {temp[0]}')
+        #     plt.xlabel('step')
+        #     plt.ylabel('tempterautre [Lennard Jones]')
 
 
-        else:
-            try:
-                temp = self.temp
-                step = self.step
-            except:
-                step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(v)
+        #else:
+        try:
+            temp = self.temp
+            step = self.step
+        except:
+            step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(v)
 
-            plt.plot(step, temp, label=f't0 = {temp[0]}')
-            plt.xlabel('step')
-            plt.ylabel('tempterautre [Lennard Jones]')
+        plt.plot(step, temp, label=f't0 = {temp[0]}')
+        plt.xlabel('step')
+        plt.ylabel('tempterautre [Lennard Jones]')
 
 
 
@@ -182,28 +188,28 @@ class logfile_reader():
         """
 
         # #c part 1 temp varying init v
-        if isinstance(temps, list):
-            for i,t in enumerate(temps):
-                step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(t)
-                avg_temp = np.average(temp)
-                plt.plot(step, temp, label=f'avg: {temp[0]}')
-            plt.xlabel('step')
-            plt.ylabel('tempterautre [Lennard Jones]')
+        # if isinstance(temps, list):
+        #     for i,t in enumerate(temps):
+        #         step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile(t)
+        #         avg_temp = np.average(temp)
+        #         plt.plot(step, temp, label=f'avg: {temp[0]}')
+        #     plt.xlabel('step')
+        #     plt.ylabel('tempterautre [Lennard Jones]')
+        #
+        #
+        # else:
+        try:
+            press = self.temp
+            step = self.step
+        except:
+            step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile()
 
-
-        else:
-            try:
-                temp = self.temp
-                step = self.step
-            except:
-                step, time, temp, press, kineng, poteng, toteng, dist, cm_vel  = self.readfile()
-
-            try:
-                plt.plot(step, press, label=f't0 = {temp[0]}')
-            except: #is temps is not a list
-                plt.plot(step, press)
-            plt.xlabel('step')
-            plt.ylabel('pressure [Lennard Jones]')
+        try:
+            plt.plot(step, press, label=f't0 = {temp[0]}')
+        except: #is temps is not a list
+            plt.plot(step, press)
+        plt.xlabel('step')
+        plt.ylabel('pressure [Lennard Jones]')
 
 
     def dist_plot(self, temps = ''):
@@ -244,6 +250,13 @@ class logfile_reader():
         plt.ylabel('average pressure')
 
     def energy_plot(self, temps=['']):
+        try:
+            step = self.step
+            kineng = self.kineng
+            poteng = self.poteng
+            toteng = self.toteng
+        except:
+            pass
 
         #part B, plot energy
         plt.plot(step, kineng, label ='kineng')
@@ -272,8 +285,15 @@ if __name__ == '__main__':
     #temps = ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0']
     #temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
     temps = ''
-    init = logfile_reader('../project2/pores/data/log.dev_phi0.14845113982142')
+    #init = logfile_reader('../project2/pores/data/log.dev_phi0.14845113982142')
     #init.press_plot(temps_int)
-    init.dist_plot()
+    #init.dist_plot()
+    energy_plot_init = logfile_reader('../project1/presentation_test/')
+    _ = energy_plot_init.readfile('log.lammps_0.5_dev')
+    energy_plot_init.press_plot()
+    _ = energy_plot_init.readfile('log.lammps_1.5_dev')
+    energy_plot_init.press_plot()
+    _ = energy_plot_init.readfile('log.lammps_2.5_dev')
+    energy_plot_init.press_plot()
     plt.legend()
     plt.show()
