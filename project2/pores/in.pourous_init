@@ -107,7 +107,7 @@ set group stat_particles vx 0.0 vy 0.0 vz 0.0
 unfix 1
 fix 1 moving_particles nvt temp ${T} ${T} 0.5
 
-fix 2 moving_particles addforce 5.0 0.0 0.0
+#fix 2 moving_particles addforce 5.0 0.0 0.0
 
 variable num_moving equal count(moving_particles)/0.5
 variable num_stat equal count(stat_particles)
@@ -129,12 +129,12 @@ variable time equal step*dt
 compute _msd moving_particles msd
 
 compute myRDF all  rdf 50 #radial distribution
-fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T${T}_phi${phi} mode vector
-log data/log.rdf_phi${phi} #hopefully the name of the file
+#fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T${T}_phi${phi} mode vector
 
-log data/log.cs_phi${phi}
+
+log data/log.cs_T${T}_phi${phi}
 dump 1 all custom 10 data/dump.lammps_flow_T${T}_phi${phi} id type x y z vx vy vz
-thermo_style custom step v_time temp ke pe etotal press c__msd[4] c_cmvelocity
+thermo_style custom step v_time temp ke pe etotal press c__msd[4]
 thermo 10
 
 run 2000
