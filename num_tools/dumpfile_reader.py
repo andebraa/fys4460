@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import distance
 
 #path = 'dump.lammpstrj'
-path = '../project1/presentation_test/dump.lammps_0.5_dev'
+
 class dumpfile_reader():
     """
     class for reading and extracting dumpfile items.
@@ -64,8 +64,6 @@ class dumpfile_reader():
                         jpos = particle_pos[j]
                         for k in range(j+1, num_atoms):
                             distance_values.append(np.linalg.norm((jpos, particle_pos[k])))
-                            #distance_values[e] = np.linalg.norm((jpos,particle_pos[k]))
-                            #e +=1
 
                     histogram_matrix.append(np.histogram(distance_values, bins=(np.linspace(0,20,num_bins))))
                     distance_values = []
@@ -76,8 +74,7 @@ class dumpfile_reader():
 
             elem = line.split()
             j = (i-(9+ 9*timestep))
-            #print(i, timestep, elem[5:], j - (num_atoms+9)*timestep)
-            #print(j - ((num_atoms)*timestep))
+
             velocity_values_i[j - ((num_atoms)*timestep)] = np.linalg.norm(elem[5:])
             particle_pos[j - ((num_atoms)*timestep)] = elem[2:5] #stores the x,y,z distance of particle j
             i +=1
@@ -122,7 +119,7 @@ class dumpfile_reader():
 
         hist = []
         edges = []
-        print(np.shape(histogram_matrix))
+        print(histogram_matrix)
 
         for i in histogram_matrix:
             hist.append(i[0])
@@ -139,7 +136,11 @@ class dumpfile_reader():
 
         plt.show()
 
+    #         energy_plot_init = logfile_reader('../project1/sw_variable_temp/')
+    # _ = energy_plot_init.readfile('log.lammps_100_dev')
+
 if __name__ == '__main__':
+    path = '../project1/sw_variable_temp/dump.lammps_sw_100'
     init = dumpfile_reader(path)
-    #init.distance_histogram()
+    init.distance_histogram()
     init.histogram_evolution()

@@ -76,7 +76,7 @@ def histogram_plot():
     print(np.shape(avg_edges))
     print(avg_hist)
     print(avg_edges)
-    plt.bar(avg_hist, avg_edges[:-1])
+    plt.plot(avg_hist, avg_edges[:-1])
 
     plt.show()
 

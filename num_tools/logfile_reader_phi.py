@@ -23,16 +23,21 @@ class logfile_reader():
         """
         self.base_path = path
 
+
+
         #for PHI variations
-        # self.filenames = os.listdir(path)
-        # logfiles = [i for i in self.filenames if 'log' in i] #gather up the logfiles
-        # self.files = {}
-        # for i in logfiles:
-        #     elem = re.split(r'_phi|T',i).strip('_') #NOTE FOLLOW NAMING CONVENSION
-        #     files = {i:[elem[1], elem[2]]} #dictionary, {filename:[phi,T]}
+        self.filenames = os.listdir(path)
+        logfiles = [i for i in self.filenames if 'log' in i] #gather up the logfiles
+        files = {}
+        for i in logfiles:
+            print(i)
+            elem = re.split(r'_phi|T',i)#.strip('_') #NOTE FOLLOW NAMING CONVENSION
 
+            #files = {i:[elem[0], elem[2]]} #dictionary, {filename:[phi,T]}
+            files.update({i:[elem[0], elem[1]]})
 
-
+        self.files = files
+        print(files)
 
 
     def readfile(self, filename = ''):
@@ -52,6 +57,8 @@ class logfile_reader():
             dist (ndarray): average distance travelled by all the atoms computed by
                             lammps
         """
+        if self.files:
+            print('massive twat')
 
         try:
             infile = open(filename, 'r')
@@ -287,17 +294,28 @@ if __name__ == '__main__':
     #temps = ['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0']
     #temps_int = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
     temps = ''
-    #init = logfile_reader('../project2/pores/data/log.dev_phi0.14845113982142')
-    #init.press_plot(temps_int)
-    #init.dist_plot()
-    energy_plot_init = logfile_reader('../project1/water/')
-    _ = energy_plot_init.readfile('log.lammps_water_100')
-    energy_plot_init.dist_plot(100)
-    _ = energy_plot_init.readfile('log.lammps_water_1000')
-    energy_plot_init.dist_plot(1000)
-    _ = energy_plot_init.readfile('log.lammps_water_50')
-    energy_plot_init.dist_plot(50)
-    _ = energy_plot_init.readfile('log.lammps_water_10000')
-    energy_plot_init.dist_plot(10000)
+    init = logfile_reader('../project2/pores/data/log.dev_phi0.14845113982142')
+    init.press_plot(temps_int)
+    init.dist_plot()
+    #WATER
+    # energy_plot_init = logfile_reader('../project1/water/')
+    # _ = energy_plot_init.readfile('log.lammps_water_100')
+    # energy_plot_init.dist_plot(100)
+    # _ = energy_plot_init.readfile('log.lammps_water_1000')
+    # energy_plot_init.dist_plot(1000)
+    # _ = energy_plot_init.readfile('log.lammps_water_50')
+    # energy_plot_init.dist_plot(50)
+    # _ = energy_plot_init.readfile('log.lammps_water_10000')
+    # energy_plot_init.dist_plot(10000)
+
+    #energy_plot_init = logfile_reader('../project2/pores/data/')
+    # _ = energy_plot_init.readfile('log.lammps_water_100')
+    # energy_plot_init.dist_plot(100)
+    # _ = energy_plot_init.readfile('log.lammps_water_1000')
+    # energy_plot_init.dist_plot(1000)
+    # _ = energy_plot_init.readfile('log.lammps_water_50')
+    # energy_plot_init.dist_plot(50)
+    # _ = energy_plot_init.readfile('log.lammps_water_10000')
+    # energy_plot_init.dist_plot(10000)
     plt.legend()
     plt.show()

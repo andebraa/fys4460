@@ -13,8 +13,7 @@ variable a equal 5.431*${myscale}
 
 #time and temp variables
 variable TIME_STEPS equal 4000
-variable THERMO_STEP equal 10
-variable DUMP_STEP equal 10
+
 
 variable T0         equal 3000
 variable T1         equal 8000
@@ -22,7 +21,7 @@ variable n_temps    equal 10
 
 #LOOP 1
 label T_loop
-variable T index 100 1000 2000 3000 5000
+variable T index 1 100 2000 30000
 
 units metal
 atom_style  atomic
@@ -74,13 +73,14 @@ fix 3 all ave/time 1++ 1 1++ c_myRDF[*] file data/log.rdf_T_${T} mode vector
 # 2 is name of compute, can have the same name as fix or dump.
 
 # run simulation
+variable L equal 1
+#log data/log.T_${T}
+log log.lammps_$T_dev #hopefully the name of the file
+thermo       10
+thermo_style custom step v_L temp ke pe etotal press c_2[4] v_L
 
-log data/log.T_${T}
-thermo        ${THERMO_STEP}
-#thermo_style custom step temp ke pe etotal press c_2[4]
-
-#dump 1 all custom 10 dump.lammps_sw id type x y z vx vy vz
-run ${TIME_STEPS}
+dump 1 all custom 10 dump.lammps_sw_$T id type x y z vx vy vz
+run 4000
 
 clear
 next T
